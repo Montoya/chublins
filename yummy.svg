@@ -16,11 +16,10 @@
   <rect x="140" y="140" width="320" height="320" class="plain"/>
   <ellipse cx="300" cy="140" rx="160" ry="50" style="fill:#FAF6F6"/>
   <g id="face" transform-origin="center center" transform="rotate(-5),translate(260,284)">
-    <line x1="-5" y1="0" x2="45" y2="0" class="lnrt"/>
-    <ellipse cx="28" cy="12" rx="13" ry="13" style="fill:black"/>
-    <line x1="90" y1="0" x2="140" y2="0" class="lnrt"/>
-    <ellipse cx="123" cy="12" rx="13" ry="13" style="fill:black"/>
-	<path d="M34,20 48,10 62,20 76,10 90,20 104,10 118,20" class="lnrt" transform="translate(-10,100)"/>
+    <path d="M40 10 A10 10 10 10 0 13 10" class="lnrt"/>
+    <path d="M40 11 A10 10 10 10 0 12 10" class="lnrt" transform="translate(100,0)"/>
+	<path d="M55,0 a1,0.8 0 0,0 64,0" class="lnrt" transform="translate(-15,100)"/>
+    <path d="M30,0 a1,0.2 0 0,0 26,0" class="lnrt" transform="translate(0,120),rotate(-30)"/>
     
   </g>
 </svg>
