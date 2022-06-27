@@ -1,0 +1,29 @@
+<svg width="600" height="600" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+	<linearGradient id="tstd" x1="0" x2="0.1" y1="0" y2="1">
+      <stop offset="25%" stop-color="white"/>
+      <stop offset="95%" stop-color="#81554d"/>
+    </linearGradient>
+  </defs>
+  <style type="text/css"><![CDATA[
+	.plain{fill:white}
+    #tstdbs{fill:#81554d}
+    #tstdbd{fill:url(#tstd)}
+	.lnrt{stroke:black;fill:none;stroke-width:7;stroke-linecap:round}
+  ]]></style>
+  <rect width="100%" height="100%" fill="#c0caff"/>
+  <ellipse cx="300" cy="460" rx="160" ry="50" class="plain"/>
+  <rect x="140" y="140" width="320" height="320" class="plain"/>
+  <ellipse cx="300" cy="140" rx="160" ry="50" style="fill:#FAF6F6"/>
+  <g id="face" transform-origin="center center" transform="rotate(-5),translate(260,284)">
+    <ellipse cx="10" cy="10" rx="30" ry="30" style="fill:black"/>
+    <ellipse cx="25" cy="5" rx="8" ry="8" style="fill:white"/>
+    <ellipse cx="-8" cy="20" rx="4" ry="4" style="fill:white"/>
+    <ellipse cx="130" cy="10" rx="30" ry="30" style="fill:black"/>
+    <ellipse cx="145" cy="5" rx="8" ry="8" style="fill:white"/>
+    <ellipse cx="112" cy="20" rx="4" ry="4" style="fill:white"/>
+	<path d="M50,0 a1,0.9 0 0,0 60,0" class="lnrt" transform="translate(-10,100)"/>
+    <path d="M35,0 a1,1 0 0,1 70,0" fill="black" transform="translate(-12,-142)"/>
+    <ellipse cx="58" cy="-140" rx="50" ry="15" fill="black"/>
+  </g>
+</svg>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Color Test</title>
+<link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
+<style type="text/css">
+	body { background-color:#c0caff; } 
+	header { background:#fff; padding:18px; }
+	#marsh { width:600; height:600; position:absolute; top:50%; left:50%; margin-left:-300px; margin-top:-300px; overflow:hidden; }
+</style>
+</head>
+<body>
+<header class="navbar">
+  <section id="navbar-links" class="navbar-section">
+    <span class="navbar-brand mr-2">Colors:</span>
+  </section>
+</header>
+<div id="marsh">
+<svg width="600" height="600" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+	<linearGradient id="tstd" x1="0" x2="0.1" y1="0" y2="1">
+      <stop offset="25%" stop-color="white"/>
+      <stop offset="95%" stop-color="#81554d"/>
+    </linearGradient>
+  </defs>
+  <style type="text/css"><![CDATA[
+	.plain{fill:white}
+    #tstdbs{fill:#81554d}
+    #tstdbd{fill:url(#tstd)}
+	.lnrt{stroke:black;fill:none;stroke-width:7;stroke-linecap:round}
+  ]]></style>
+  <ellipse cx="300" cy="460" rx="160" ry="50" class="plain"/>
+  <rect x="140" y="140" width="320" height="320" class="plain"/>
+  <ellipse cx="300" cy="140" rx="160" ry="50" style="fill:#FAF6F6"/>
+  <g id="face" transform-origin="center center" transform="rotate(-5),translate(260,284)">
+    <ellipse cx="10" cy="10" rx="30" ry="30" style="fill:black"/>
+    <ellipse cx="25" cy="5" rx="8" ry="8" style="fill:white"/>
+    <ellipse cx="-8" cy="20" rx="4" ry="4" style="fill:white"/>
+    <ellipse cx="130" cy="10" rx="30" ry="30" style="fill:black"/>
+    <ellipse cx="145" cy="5" rx="8" ry="8" style="fill:white"/>
+    <ellipse cx="112" cy="20" rx="4" ry="4" style="fill:white"/>
+	<path d="M50,0 a1,0.9 0 0,0 60,0" class="lnrt" transform="translate(-10,100)"/>
+  </g>
+</svg>
+</div>
+<script type="text/javascript">
+	function setBG(color) { 
+		document.body.style.backgroundColor = ''+color; 
+	}
+	var colors = [
+		'#c0caff', // default blue 
+		'#ff6b6b', // red 
+		'#ffdd59', // yellow 
+		'#0be881', // green
+		'#fd9644', // orange 
+		'#a55eea', // purple 
+		'#778ca3', // gray 
+		'#f8a5c2', // pink 
+	]; 
+	for(var i = 0; i < colors.length; i++) { 
+		var color = colors[i]; 
+		var link = document.createElement('a'); 
+		link.textContent = ''+color; 
+		link.className = 'btn btn-link'; 
+		link.onclick = function(e) { setBG(e.target.textContent); return false; }; 
+		document.getElementById('navbar-links').appendChild(link); 
+	}
+	
+	var ears = [
+		'', // none 
+		'<path d="M34,30 54,0 74,30" class="lnrt" transform="translate(-80,-170)"/><path d="M34,30 54,0 74,30" class="lnrt" transform="translate(90,-167)"/>', // cat 
+		'<path d="M50,0 a0.9,1 0 0,1 60,-8" class="lnrt" transform="translate(-98,-142)"/><path d="M50,0 a0.9,1 0 0,1 60,12" class="lnrt" transform="translate(66,-146)"/>', // bear 
+	]; 
+</script>
+</body>
+</html>
