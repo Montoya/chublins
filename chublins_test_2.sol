@@ -1673,16 +1673,16 @@ contract Chublin is Ownable, ERC721A, ReentrancyGuard {
     string[8] private _bgColors = ["c0caff","ff6b6b","ffdd59","0be881","fd9644","a55eea","778ca3","f8a5c2"]; 
     string[8] private _bgColorIds = ["sky","tomato","lemon","jade","clementine","royal","slate","sakura"]; 
     string[3] private _ears = [
-        "", 
-		"<path d='M34,30 54,0 74,30' class='lnft' transform='translate(-80,-170)'/><path d='M34,30 54,0 74,30' class='lnft' transform='translate(90,-167)'/>", // cat 
-		"<path d='M50,0 a0.9,1 0 0,1 60,-8' class='lnft' transform='translate(-98,-142)'/><path d='M50,0 a0.9,1 0 0,1 60,12' class='lnft' transform='translate(66,-146)'/>", // bear 
+        '', 
+		'<path d="M34,30 54,0 74,30" class="lnft" transform="translate(-80,-170)"/><path d="M34,30 54,0 74,30" class="lnft" transform="translate(90,-167)"/>',  
+		'<path d="M50,0 a0.9,1 0 0,1 60,-8" class="lnft" transform="translate(-98,-142)"/><path d="M50,0 a0.9,1 0 0,1 60,12" class="lnft" transform="translate(66,-146)"/>' 
 	]; 
     string[3] private _earIds = ["none","cat","bear"]; 
     string[4] private _hats = [
-        "", // none 
-        "<g transform='translate(-8,-130)'><ellipse cx='70' cy='2' rx='50' ry='15' fill='#000'/><path d='M35,0 a1,1 0 0,1 70,0' fill='#000'/><path d='M35,0 a6,1 0 1,0 70,0' stroke='#555' stroke-width='2'/></g>", // bowl
-        "<g transform='translate(-4,-112)'><path d='M20,0 a1,1 0 0,1 100,0' fill='#000'/><path d='M21,0 120,0' stroke='#000' stroke-width='2'/><path d='M20,0 a2.5,1.5 18 1,0 100,0' fill='#000'/><path d='M20,0 a8,1 0 1,0 100,0' stroke='#555' stroke-width='2' stroke-linecap='round'/><text class='chub' x='55' y='-3'>chub</text></g>", // cap
-        "<path d='M66,-146 70,-204 30,-224' class='lnrt'/><ellipse cx='30' cy='-224' rx='14' ry='14' fill='black'/>", // antenna
+        '', 
+        '<g transform="translate(-8,-130)"><ellipse cx="70" cy="2" rx="50" ry="15" fill="#000"/><path d="M35,0 a1,1 0 0,1 70,0" fill="#000"/><path d="M35,0 a6,1 0 1,0 70,0" stroke="#555" stroke-width="2"/></g>', 
+        '<g transform="translate(-4,-112)"><path d="M20,0 a1,1 0 0,1 100,0" fill="#000"/><path d="M21,0 120,0" stroke="#000" stroke-width="2"/><path d="M20,0 a2.5,1.5 18 1,0 100,0" fill="#000"/><path d="M20,0 a8,1 0 1,0 100,0" stroke="#555" stroke-width="2" stroke-linecap="round"/><text class="chub" x="55" y="-3">chub</text></g>', 
+        '<path d="M66,-146 70,-204 30,-224" class="lnrt"/><ellipse cx="30" cy="-224" rx="14" ry="14" fill="black"/>'
     ]; 
     string[4] private _hatIds = ["none","bowl","cap","antenna"]; 
 
@@ -1690,18 +1690,18 @@ contract Chublin is Ownable, ERC721A, ReentrancyGuard {
         chubData memory chub; 
 
         // random background color 
-        uint256 rand = uint256(keccak256(abi.encodePacked(tokenId, address(this), "4"))) % _bgColors.length;
+        uint256 rand = uint256(keccak256(abi.encodePacked(id, address(this), "4"))) % _bgColors.length;
         chub.bgColorId = _bgColorIds[rand]; 
         chub.bgColor = _bgColors[rand]; 
 
         // random ears 
-        rand = uint256(keccak256(abi.encodePacked(tokenId, address(this), "5"))) % 12;
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "5"))) % 12;
         if(rand > 10) { rand = 2; } else if(rand > 8) { rand = 1; } else { rand = 0; }
         chub.earType = _ears[rand]; 
         chub.earTypeId = _earIds[rand]; 
 
         // random hats
-        rand = uint256(keccak256(abi.encodePacked(tokenId, address(this), "6"))) % 9;
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "6"))) % 9;
         if(rand > 7) { rand = 3; } else if(rand > 6) { rand = 2; } else if(rand > 5) { rand = 1; } else { rand = 0; }
         chub.hat = _hats[rand]; 
         chub.hatId = _hatIds[rand]; 
@@ -1737,7 +1737,7 @@ contract Chublin is Ownable, ERC721A, ReentrancyGuard {
 
         string memory output = makeSVG(chub); 
 
-        string[8] memory parts; 
+        string[9] memory parts; 
 
         parts[0] = '[{"trait_type":"BG Color","value":"';
         parts[1] = chub.bgColorId;
