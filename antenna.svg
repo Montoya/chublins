@@ -9,7 +9,7 @@
 	.plain{fill:white}
     #tstdbs{fill:#81554d}
     #tstdbd{fill:url(#tstd)}
-	.lnrt{stroke:black;fill:none;stroke-width:7;stroke-linecap:round}
+	.lnrt{stroke:black;fill:none;stroke-width:7;stroke-linecap:round;stroke-linejoin:bevel}
     .lnft{stroke:black;fill:gray;stroke-width:12;stroke-linecap:round}
     .tt{font-size:60px;font-family:Arial}
     .tb{font-weight:bold}
@@ -26,5 +26,7 @@
     <path d="M50,0 a1,0.9 0 0,0 60,0" class="lnrt" transform="translate(-10,100)"/>
     <path d="M50,0 a0.9,1 0 0,1 60,-8" class="lnft" transform="translate(-98,-142)"/>
     <path d="M50,0 a0.9,1 0 0,1 60,12" class="lnft" transform="translate(66,-146)"/>
+    <path d="M66,-146 70,-204 30,-224" class="lnrt"/>
+    <ellipse cx="30" cy="-224" rx="14" ry="14" style="fill:black"/>
   </g>
 </svg>
