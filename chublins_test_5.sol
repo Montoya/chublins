@@ -1667,12 +1667,18 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
     }
 
     struct chubData {
-        string bgColorId;
         string bgColor;
-        string earType;
-        string earTypeId;
+        string bgColorId;
+        string ears;
+        string earsId;
         string hat;
         string hatId;
+        string eyes; 
+        string eyesId; 
+        string mouth; 
+        string mouthId; 
+        string accessory; 
+        string accessoryId; 
         string license;
     }
 
@@ -1691,22 +1697,50 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         '<path d="M66,-146 70,-204 30,-224" class="lnrt"/><ellipse cx="30" cy="-224" rx="14" ry="14" fill="black"/>'
     ];
     string[4] private _hatIds = ["none","bowl","cap","antenna"];
-    string[100] private _eyes = [
+    string[10] private _eyes = [
         '<ellipse cx="10" cy="10" rx="10" ry="10" fill="black"/><ellipse cx="130" cy="10" rx="10" ry="10" fill="black"/>',
         '<ellipse cx="10" cy="10" rx="30" ry="30" fill="black"/><ellipse cx="25" cy="5" rx="8" ry="8" fill="white"/><ellipse cx="-8" cy="20" rx="4" ry="4" fill="white"/><ellipse cx="130" cy="10" rx="30" ry="30" fill="black"/><ellipse cx="145" cy="5" rx="8" ry="8" fill="white"/><ellipse cx="112" cy="20" rx="4" ry="4" fill="white"/>',
         '<ellipse cx="10" cy="10" rx="30" ry="30" fill="black"/><ellipse cx="10" cy="10" rx="24" ry="24" class="wlrt"/><ellipse cx="130" cy="10" rx="30" ry="30" fill="black"/><ellipse cx="130" cy="10" rx="24" ry="24" class="wlrt"/>',
+        '<rect x="24" y="-18" width="16" height="48" ry="8" style="fill:black"/><rect x="100" y="-18" width="16" height="48" ry="8" style="fill:black"/>', 
         '<path d="M40 10 A10 10 10 10 0 13 10" class="lnrt"/><path d="M40 11 A10 10 10 10 0 12 10" class="lnrt" transform="translate(100,0)"/>',
         '<line x1="-5" y1="0" x2="45" y2="0" class="lnrt"/><ellipse cx="28" cy="12" rx="13" ry="13" fill="black"/><line x1="90" y1="0" x2="140" y2="0" class="lnrt"/><ellipse cx="123" cy="12" rx="13" ry="13" fill="black"/>', 
-        '<line x1="-5" y1="0" x2="45" y2="0" class="lnrt"/><ellipse cx="28" cy="12" rx="13" ry="13" fill="black"/><line x1="90" y1="0" x2="140" y2="0" class="lnrt"/><ellipse cx="123" cy="12" rx="13" ry="13" fill="black"/>', 
+        '<text class="tt" transform="translate(-2,24)">X</text><text class="tt" transform="translate(94,24)">X</text>'
     ]; 
-    string[100] private _eyeIds = [
+    string[10] private _eyeIds = [
         "tiny",
         "bubble",
         "froyo",
+        "socket",
         "chuffed",
-        "sarcastic",
         "displeased",
-    ]
+        "deceased"
+    ];
+    string[10] private _mouths = [
+        '<path d="M40,0 a1,1 0 0,0 60,0" fill="black" transform="translate(0,100)"/>',
+        '<path d="M50,0 a1,0.9 0 0,0 60,0" class="lnrt" transform="rotate(180),translate(-150,-124)"/>',
+        '<path d="M50,0 a1,0.9 0 0,0 60,0" class="lnrt" transform="translate(-10,100)"/>', 
+        '<path d="M55,0 a1,0.8 0 0,0 64,0" class="lnrt" transform="translate(-15,100)"/><path d="M30,0 a1,0.2 0 0,0 26,0" class="lnrt" transform="translate(0,120),rotate(-30)"/>',
+        '<path d="M34,20 48,10 62,20 76,10 90,20 104,10 118,20" class="lnrt" transform="translate(-10,100)"/>', 
+        '<path d="M20,0 a1,1 0 0,0 40,0" class="lnrt" transform="translate(7,105)"/><path d="M20,0 a1,1 0 0,0 40,0" class="lnrt" transform="translate(48,105)"/>', 
+        '<path d="M60,0 a1.2,1 0 0,0 0,-30" class="lnrt" transform="translate(7,100)"/><path d="M60,0 a1.2,1 0 0,0 0,-30" class="lnrt" transform="translate(7,131)"/>' 
+    ]; 
+    string[10] private _mouthIds = [
+        "happy",
+        "sad",
+        "elated",
+        "chuffed",
+        "angry", 
+        "goopy",
+        "kissy"
+    ]; 
+    string[10] private _accessories = [
+        '',
+        '<path d="m 62.75,68.40197 c -12.39952,0.86941 -12.32504,13.72601 -29.25,12.25 7.34151,13.53549 24.42044,13.43629 34.25,6.75 9.82956,-6.68629 4.81982,-19.68853 -5,-19 z"/><path d="m 79.09507,68.40198 c 12.39952,0.86941 12.32504,13.72601 29.25,12.25 -7.34151,13.53549 -24.42044,13.43629 -34.25,6.75 -9.82956,-6.68629 -4.81982,-19.68853 5,-19 z"/>'
+    ]; 
+    string[10] private _accessoryIds = [
+        "none",
+        "mustache" 
+    ]; 
 
     function makeChub(uint256 id) internal view returns (chubData memory) {
         chubData memory chub;
@@ -1719,14 +1753,26 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         // random ears
         rand = uint256(keccak256(abi.encodePacked(id, address(this), "5"))) % 12;
         if(rand > 10) { rand = 2; } else if(rand > 8) { rand = 1; } else { rand = 0; }
-        chub.earType = _ears[rand];
-        chub.earTypeId = _earIds[rand];
+        chub.ears = _ears[rand];
+        chub.earsId = _earIds[rand];
 
         // random hats
         rand = uint256(keccak256(abi.encodePacked(id, address(this), "6"))) % 9;
         if(rand > 7) { rand = 3; } else if(rand > 6) { rand = 2; } else if(rand > 5) { rand = 1; } else { rand = 0; }
         chub.hat = _hats[rand];
         chub.hatId = _hatIds[rand];
+
+        // random eyes 
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "7"))) % 7;
+        chub.eyes = _eyes[rand]; 
+        chub.eyesId = _eyeIds[rand]; 
+
+        // random mouths
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "8"))) % 7;
+        chub.mouth = _mouths[rand]; 
+        chub.mouthId = _mouthIds[rand]; 
+
+        // todo: random accessories 
 
         chub.license = "CC0";
         if(_licenses[id]==0) {
@@ -1745,13 +1791,16 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         parts[0] = "<svg width='600' height='600' viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'>";
         parts[1] = "<style type='text/css'><![CDATA[.chub{fill:#ddd;font-family:'Comic Sans MS','Chalkboard SE','Comic Neue',cursive}";
         parts[2] = ".lnrt{stroke:#000;fill:none;stroke-width:7;stroke-linecap:round;stroke-linejoin:bezel}.lnft{stroke:#000;fill:gray;stroke-width:8;stroke-linecap:round}";
-        parts[3] = ".wlrt{fill:none;stroke:white;stroke-width:3}";
+        parts[3] = ".wlrt{fill:none;stroke:white;stroke-width:3}.tt{font-size:60px;font-weight:bold;font-family:Arial}";
         parts[4] = "]]></style><rect width='100%' height='100%' fill='#";
         parts[5] =  chub.bgColor;
         parts[6] = "'/><ellipse cx='300' cy='460' rx='160' ry='50' fill='#fff'/><rect x='140' y='140' width='320' height='320' fill='#fff'/>";
         parts[7] = "<ellipse cx='300' cy='140' rx='160' ry='50' fill='#FAF6F6'/><g id='face' transform-origin='center center' transform='rotate(-5),translate(260,284)'>";
-        parts[8] = chub.earType;
+        parts[8] = chub.ears;
         parts[9] = chub.hat;
+        parts[10] = "<g id='face' transform-origin='center center' transform='rotate(-5),translate(260,284)'>"; 
+        parts[11] = chub.eyes; 
+        parts[12] = chub.mouth; 
         parts[13] = "</g></svg>";
 
         string memory output = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6]));
@@ -1780,19 +1829,23 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         parts[0] = '[{"trait_type":"BG Color","value":"';
         parts[1] = chub.bgColorId;
         parts[2] = '"},{"trait_type":"Ears","value":"';
-        parts[3] = chub.earTypeId;
+        parts[3] = chub.earsId;
         parts[4] = '"},{"trait_type":"Hat","value":"';
         parts[5] = chub.hatId;
+        parts[6] = '"},{"trait_type":"Eyes","value":"';
+        parts[7] = chub.eyesId; 
+        parts[8] = '"},{"trait_type":"Mouth","value":"';
+        parts[9] = chub.mouthId; 
         parts[12] = '"},{"trait_type":"License","value":"';
         parts[13] = chub.license;
         parts[14] = '"}]';
 
-        string memory json = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]));
-        json = string(abi.encodePacked(json,parts[12],parts[13],parts[14]));
+        string memory json = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7]));
+        json = string(abi.encodePacked(json,parts[8],parts[9],parts[10],parts[11],parts[12],parts[13],parts[14]));
 
         string memory nftName = string(abi.encodePacked("Chublin", ' #', toString(tokenId)));
 
-        json = string(abi.encodePacked('{"name":"',nftName,'", "description":"A Chublin generated and stored entirely on-chain.","attributes":',json));
+        json = string(abi.encodePacked('{"name":"',nftName,'", "description":"A Chublin born of the blockchain.","attributes":',json));
         json = Base64.encode(bytes(string(abi.encodePacked(json, ', "image":"', output, '"}'))));
         output = string(abi.encodePacked('data:application/json;base64,', json));
 
