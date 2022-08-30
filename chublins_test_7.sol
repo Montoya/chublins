@@ -1690,30 +1690,32 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
     string[8] private _bgColorIds = ["sky","tomato","lemon","jade","clementine","royal","slate","sakura"];
     string[3] private _ears = [
         '',
-		'<path d="M34,30 54,0 74,30" class="lnft" transform="translate(-80,-170)"/><path d="M34,30 54,0 74,30" class="lnft" transform="translate(90,-167)"/>',
-		'<path d="M50,0 a0.9,1 0 0,1 60,-8" class="lnft" transform="translate(-98,-142)"/><path d="M50,0 a0.9,1 0 0,1 60,12" class="lnft" transform="translate(66,-146)"/>'
+		'<path d="M-46 -140 -26 -170 -6 -140" class="lnft"/><path d="M124 -137 144 -167 164 -137" class="lnft"/>',
+		'<path d="M-48,-142 a0.9,1 0 0,1 60,-8" class="lnft th"/><path d="M116,-146 a0.9,1 0 0,1 60,12" class="lnft th"/>'
 	];
     string[3] private _earIds = ["none","cat","bear"];
     string[4] private _hats = [
         '',
-        '<g transform="translate(-8,-130)"><ellipse cx="70" cy="2" rx="50" ry="15" fill="#000"/><path d="M35,0 a1,1 0 0,1 70,0" fill="#000"/><path d="M35,0 a6,1 0 1,0 70,0" stroke="#555" stroke-width="2"/></g>',
+        '<ellipse cx="62" cy="-128" rx="50" ry="15"/><path d="M27,-130 a1,1 0 0,1 70,0"/><path d="M27,-130 a6,1 0 1,0 70,0" stroke="gray" stroke-width="2"/>',
         '<path d="M16 -112a1 1 0 0 1 100 0"/><path d="M17-112h99" stroke="#000" stroke-width="2"/><path d="M16 -112a2.5 1.5 18 1 0 100 0"/><path d="M16-112a50 6.25 0 1 0 100 0" stroke="#555" stroke-width="2" stroke-linecap="round"/><text x="52" y="-117" fill="#ddd">chub</text>',
-        '<path d="M66,-146 70,-204 30,-224" class="lnrt"/><ellipse cx="30" cy="-224" rx="14" ry="14" fill="black"/>'
+        '<path d="m62-146 4-58-40-20" class="lnrt"/><circle cx="26" cy="-224" r="14"/>'
     ];
     string[4] private _hatIds = ["none","bowl","cap","antenna"];
-    string[9] private _eyes = [
+    string[10] private _eyes = [
         '<circle cx="10" cy="10" r="10"/><circle cx="130" cy="10" r="10"/>',
+        '<g transform="scale(2)"><path d="M5-7v4.522m-8.334-.87L-.422.112m13.756-3.46L10.422.112" class="lnrt tn"/><circle r="8" cy="5" cx="5"/><path d="M65-7v4.522m-8.334-.87 2.912 3.46m13.756-3.46L70.422.112" class="lnrt tn"/><circle r="8" cy="5" cx="65"/></g>',
         '<circle cx="10" cy="10" r="30"/><circle cx="25" cy="5" r="8" fill="#fff"/><circle cx="-8" cy="20" r="4" fill="#fff"/><circle cx="130" cy="10" r="30"/><circle cx="145" cy="5" r="8" fill="#fff"/><circle cx="112" cy="20" r="4" fill="#fff"/>',
         '<circle cx="10" cy="10" r="30"/><circle cx="10" cy="10" r="24" class="wlrt"/><circle cx="130" cy="10" r="30"/><circle cx="130" cy="10" r="24" class="wlrt"/>',
-        '<rect x="24" y="-18" width="16" height="48" ry="8" style="fill:black"/><rect x="100" y="-18" width="16" height="48" ry="8" style="fill:black"/>', 
-        '<path d="M40 10 A10 10 10 10 0 13 10" class="lnrt"/><path d="M40 11 A10 10 10 10 0 12 10" class="lnrt" transform="translate(100,0)"/>',
-        '<line x1="-5" y1="0" x2="45" y2="0" class="lnrt"/><ellipse cx="28" cy="12" rx="13" ry="13" fill="black"/><line x1="90" y1="0" x2="140" y2="0" class="lnrt"/><ellipse cx="123" cy="12" rx="13" ry="13" fill="black"/>', 
-        '<line x1="-12" y1="18" x2="13" y2="-18" class="lnrt"/><line x1="13" y1="-18" x2="38" y2="18" class="lnrt"/><line x1="100" y1="18" x2="125" y2="-18" class="lnrt"/><line x1="125" y1="-18" x2="150" y2="18" class="lnrt"/>', 
-        '<line x1="0" y1="-18" x2="42" y2="24" class="lnrt"/><line x1="0" y1="24" x2="42" y2="-18" class="lnrt"/><line x1="96" y1="-18" x2="138" y2="24" class="lnrt"/><line x1="96" y1="24" x2="138" y2="-18" class="lnrt"/>', 
-        '<line x1="-4" y1="-30" x2="44" y2="-6" stroke="black" stroke-width="12"/><ellipse cx="23" cy="12" rx="13" ry="13" fill="black"/><line x1="108" y1="-6" x2="156" y2="-30"  stroke="black" stroke-width="12"/><ellipse cx="128" cy="12" rx="13" ry="13" fill="black"/>'
+        '<rect x="24" y="-18" width="16" height="48" ry="8"/><rect x="100" y="-18" width="16" height="48" ry="8"/>', 
+        '<path d="M40 10 A10 10 10 10 0 13 10" class="lnrt"/><path d="M140 11 A10 10 10 10 100 12 10" class="lnrt"/>',
+        '<path class="lnrt" d="M-5 0h50"/><circle cx="28" cy="12" r="13"/><path class="lnrt" d="M90 0h50"/><circle cx="123" cy="12" r="13"/>', 
+        '<path class="lnrt" d="m-12 18 25-36m0 0 25 36m62 0 25-36m0 0 25 36"/>', 
+        '<path d="m0-18 42 42M0 24l42-42m54 0 42 42m-42 0 42-42" class="lnrt"/>', 
+        '<path stroke="#000" class="th" d="M-4-30 44-6"/><circle cx="23" cy="12" r="13"/><path stroke="#000" class="th" d="m108-6 48-24"/><circle cx="128" cy="12" r="13"/>'
     ]; 
-    string[9] private _eyeIds = [
+    string[10] private _eyeIds = [
         "tiny",
+        "lashes",
         "bubble",
         "froyo",
         "socket",
@@ -1723,45 +1725,55 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         "deceased", 
         "angry"
     ];
-    string[4] private _cheeks = [
+    string[5] private _cheeks = [
         '', 
-        '<ellipse cx="10" cy="60" rx="20" ry="10" style="fill:pink"/><ellipse cx="130" cy="60" rx="20" ry="10" style="fill:pink"/>', 
-        '<path d="M15 6 Q 15 6, 25 18 A 12.8 12.8 0 1 1 5 18 Q 15 6 15 6z" fill="#8af" transform="rotate(5),translate(-6,38)"/>', 
-        '<path d="M15 6 Q 15 6, 25 18 A 12.8 12.8 0 1 1 5 18 Q 15 6 15 6z" stroke-width="3" stroke="black" fill="none" transform="rotate(5),translate(-6,38)"/>'
+        '<ellipse cx="10" cy="60" rx="20" ry="10" fill="pink"/><ellipse cx="130" cy="60" rx="20" ry="10" fill="pink"/>', 
+        '<path d="m15 6 10 12a12.8 12.8 0 1 1-20 0L15 6z" fill="#8af" transform="rotate(5 -432.172 -87.711)"/>', 
+        '<path d="m15 6 10 12a12.8 12.8 0 1 1-20 0L15 6z" fill="none" stroke="black" stroke-width="3" transform="rotate(5 -432.172 -87.711)"/>',
+        '<path fill="#ffaafc" d="M-8 24c.568-3.85 4.951-3.909 6.844-1.609 1.892-2.3 6.275-2.241 6.843 1.61.506 3.436-4.012 6.23-6.843 8.058-2.832-1.829-7.35-4.622-6.844-8.059z" transform="matrix(2 0 0 2.4 0 0)"/><path fill="#ffaafc" d="M66 24c.568-3.85 4.951-3.909 6.844-1.609 1.892-2.3 6.275-2.241 6.843 1.61.506 3.436-4.012 6.23-6.843 8.058-2.832-1.829-7.35-4.622-6.844-8.059z" transform="matrix(2 0 0 2.4 0 0)"/>'
     ]; 
-    string[4] private _cheekIds = [
+    string[5] private _cheekIds = [
         "plain",
         "pink",
-        "teardrop",
-        "tattoo"
+        "tear",
+        "tattoo",
+        "hearts"
     ]; 
-    string[10] private _mouths = [
-        '<path d="M40,0 a1,1 0 0,0 60,0" fill="black" transform="translate(0,100)"/>',
-        '<path d="M50,0 a1,0.9 0 0,0 60,0" class="lnrt" transform="rotate(180),translate(-150,-124)"/>',
-        '<path d="M50,0 a1,0.9 0 0,0 60,0" class="lnrt" transform="translate(-10,100)"/>', 
-        '<path d="M55,0 a1,0.8 0 0,0 64,0" class="lnrt" transform="translate(-15,100)"/><path d="M30,0 a1,0.2 0 0,0 26,0" class="lnrt" transform="translate(0,120),rotate(-30)"/>',
-        '<path d="M34,20 48,10 62,20 76,10 90,20 104,10 118,20" class="lnrt" transform="translate(-10,100)"/>', 
-        '<path d="M20,0 a1,1 0 0,0 40,0" class="lnrt" transform="translate(7,105)"/><path d="M20,0 a1,1 0 0,0 40,0" class="lnrt" transform="translate(48,105)"/>', 
-        '<path d="M60,0 a1.2,1 0 0,0 0,-30" class="lnrt" transform="translate(7,100)"/><path d="M60,0 a1.2,1 0 0,0 0,-30" class="lnrt" transform="translate(7,131)"/>' 
+    string[9] private _mouths = [
+        '<path d="M40,100 a1,1 0 0,0 60,0"/>',
+        '<path d="m40 116 60-0" class="lnrt"/>',
+        '<path d="M-100 -124a1 .9 0 0 0 60 0" class="lnrt" transform="rotate(180)"/>',
+        '<path d="M40,100 a1,0.9 0 0,0 60,0" class="lnrt"/>', 
+        '<path d="M40 100a1 .8 0 0 0 64 0" class="lnrt"/><path d="M-30 104a1 .2 0 0 0 26 0" class="lnrt" transform="rotate(-30)"/>',
+        '<path d="m24 120 14-10 14 10 14-10 14 10 14-10 14 10" class="lnrt"/>', 
+        '<ellipse cx="70" cy="114" rx="18" ry="24"/>',
+        '<path d="M27,105 a1,1 0 0,0 40,0" class="lnrt"/><path d="M68,105 a1,1 0 0,0 40,0" class="lnrt"/>', 
+        '<path d="M67,120 a0.6,0.6 0 0,0 0,-20" class="lnrt tn"/><path d="M67,140 a1.2,1 0 0,0 0,-20" class="lnrt tn"/>' 
     ]; 
-    string[10] private _mouthIds = [
+    string[9] private _mouthIds = [
         "happy",
+        "uncertain",
         "sad",
         "elated",
         "chuffed",
         "angry", 
+        "shocked",
         "goopy",
         "kissy"
     ]; 
-    string[3] private _accessories = [
+    string[5] private _accessories = [
         '',
         '<path d="m 62.75,68.40197 c -12.39952,0.86941 -12.32504,13.72601 -29.25,12.25 7.34151,13.53549 24.42044,13.43629 34.25,6.75 9.82956,-6.68629 4.81982,-19.68853 -5,-19 z"/><path d="m 79.09507,68.40198 c 12.39952,0.86941 12.32504,13.72601 29.25,12.25 -7.34151,13.53549 -24.42044,13.43629 -34.25,6.75 -9.82956,-6.68629 -4.81982,-19.68853 5,-19 z"/>',
-        '<polygon points="0,0 20,15 40,0 40,30 20,15 0,30 0,0" fill="red" stroke="red" stroke-width="7" stroke-linejoin="round" transform="translate(-44,-82)"/><ellipse rx="10" ry="10" fill="red" stroke="white" stroke-width="2" transform="translate(-24.5,-67)"/>'
+        '<path fill="red" stroke="red" stroke-width="7" stroke-linejoin="round" d="m-44-82 20 15 20-15v30l-20-15-20 15z"/><rect x="-34.5" y="-77.5" width="21" height="21" rx="4" fill="red" stroke="#fff" stroke-width="2"/>',
+        '<path d="M-12 -53c-3.73-2.115-6.055-6.2-6.06-10.643 0-4.447 2.327-8.537 6.06-10.655m-37.738 0c3.73 2.115 6.055 6.2 6.06 10.643 0 4.448-2.326 8.538-6.06 10.655m8.22 8.22c2.116-3.73 6.2-6.055 10.643-6.06 4.448 0 8.538 2.327 10.655 6.06m0-37.738c-2.115 3.73-6.2 6.055-10.643 6.06-4.447 0-8.537-2.326-10.655-6.06" class="lnrt tn"/>',
+        '<path d="m2.45 10.806 1.488.469.444 1.56.44-1.56 1.487-.469-1.488-.48-.439-1.547-.444 1.547zM.523 3.496l2.063.658.647 2.188.604-2.188 2.087-.658-2.087-.652L3.232.668l-.646 2.176zm8.11-2.028L7.626 5.263l-2.61 1.079 2.61 1.08 1.007 3.794L9.701 7.42l2.525-1.079-2.525-1.08z" fill="#ffc502" transform="translate(-88,-18)scale(4.5)"/>'
     ]; 
-    string[3] private _accessoryIds = [
+    string[5] private _accessoryIds = [
         "none",
-        "mustache", 
-        "bow"
+        "mustache",
+        "bow",
+        "pop",
+        "sparkle"
     ]; 
     string[3] private _filters = [
         '<filter id="none"><feGaussianBlur in="SourceGraphic" stdDeviation="0" result="none"/></filter>', 
@@ -1795,30 +1807,30 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         chub.hatId = _hatIds[rand];
 
         // random eyes 
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "7"))) % 9;
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "7"))) % _eyes.length;
         chub.eyes = _eyes[rand]; 
         chub.eyesId = _eyeIds[rand]; 
 
         // random cheeks 
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "8"))) % 60;
-        if(rand > 4) { rand = 0; }
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "8"))) % 75;
+        if(rand > _cheeks.length) { rand = 0; }
         chub.cheeks = _cheeks[rand]; 
         chub.cheeksId = _cheekIds[rand]; 
 
         // random mouths
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "9"))) % 7;
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "9"))) % _mouths.length;
         chub.mouth = _mouths[rand]; 
         chub.mouthId = _mouthIds[rand]; 
 
         // random accessories 
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "0"))) % 50;
-        if(rand > 2) { rand = 0; }
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "0"))) % 100;
+        if(rand > _accessories.length) { rand = 0; }
         chub.accessory = _accessories[rand]; 
         chub.accessoryId = _accessoryIds[rand]; 
 
         // random filters 
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "0"))) % 100;
-        if(rand > 3) { rand = 0; }
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "3"))) % 100;
+        if(rand > _filters.length) { rand = 0; }
         chub.filter = _filters[rand]; 
         chub.filterId = _filterIds[rand]; 
 
@@ -1838,7 +1850,7 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
 
         parts[0] = "<svg width='600' height='600' viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'>";
         parts[1] = "<style>.lnft{stroke:#000;fill:gray;stroke-width:8;stroke-linecap:round}.lnrt{stroke:#000;fill:none;stroke-width:7;stroke-linecap:round;stroke-linejoin:bezel}";
-        parts[2] = ".wlrt{stroke:#fff;stroke-width:3}text{font-family:'Comic Sans MS','Comic Sans','Chalkboard SE','Comic Neue',cursive;font-size:12pt}</style><defs>";
+        parts[2] = ".th{stroke-width:12}.tn{stroke-width:4}.wlrt{stroke:#fff;stroke-width:3}text{font-family:'Comic Sans MS','Comic Sans','Chalkboard SE','Comic Neue',cursive;font-size:12pt}</style><defs>";
         parts[3] = chub.filter; 
         parts[4] = "</defs><rect width='100%' height='100%' fill='#";
         parts[5] = chub.bgColor;
