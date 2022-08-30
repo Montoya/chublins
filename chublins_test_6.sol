@@ -1764,7 +1764,7 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         "bow"
     ]; 
     string[3] private _filters = [
-        '', 
+        '<filter id="none"><feGaussianBlur in="SourceGraphic" stdDeviation="0" result="none"/></filter>', 
         '<filter xmlns="http://www.w3.org/2000/svg" id="wavy" x="-50%" y="-50%" width="200%" height="200%"><feTurbulence baseFrequency="0.69" type="fractalNoise"><animate attributeName="baseFrequency" begin="0s" dur="20s" values="0.0812;0.0406;0.0812;0.0406" repeatCount="indefinite" easing="ease-in-out"/></feTurbulence><feDisplacementMap in="SourceGraphic" scale="12"/></filter>',
         '<filter xmlns="http://www.w3.org/2000/svg" id="glitchy" x="-50%" y="-50%" width="200%" height="200%"><feTurbulence baseFrequency="0.5" type="fractalNoise"/><feDisplacementMap in="SourceGraphic" scale="0"><animate attributeName="scale" begin="0s" dur="0.5s" values="36.72;58.84;36.90;14.99;13.26;47.30;58.24;21.58;46.51;40.17;35.83;36.08;42.74;32.16;46.57;33.67;17.31;52.09;30.80;40.37;43.99;36.21;16.18;20.04;15.72;50.92;41.35;26.12;31.38;30.41;59.51;10.51;45.48;19.59;58.88;33.92;26.88;13.50;31.85;43.88;33.05;22.82;56.26;27.90;51.95;26.47;27.13;32.41;18.12;52.98;50.04;17.62;27.43;52.81;21.61;15.11;25.89;27.39;39.35;51.29" repeatCount="indefinite"/></feDisplacementMap></filter>'
     ]; 
