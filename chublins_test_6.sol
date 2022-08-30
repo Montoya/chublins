@@ -1681,6 +1681,8 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         string mouthId; 
         string accessory; 
         string accessoryId; 
+        string filter; 
+        string filterId; 
         string license;
     }
 
@@ -1699,7 +1701,7 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         '<path d="M66,-146 70,-204 30,-224" class="lnrt"/><ellipse cx="30" cy="-224" rx="14" ry="14" fill="black"/>'
     ];
     string[4] private _hatIds = ["none","bowl","cap","antenna"];
-    string[8] private _eyes = [
+    string[9] private _eyes = [
         '<ellipse cx="10" cy="10" rx="10" ry="10" fill="black"/><ellipse cx="130" cy="10" rx="10" ry="10" fill="black"/>',
         '<ellipse cx="10" cy="10" rx="30" ry="30" fill="black"/><ellipse cx="25" cy="5" rx="8" ry="8" fill="white"/><ellipse cx="-8" cy="20" rx="4" ry="4" fill="white"/><ellipse cx="130" cy="10" rx="30" ry="30" fill="black"/><ellipse cx="145" cy="5" rx="8" ry="8" fill="white"/><ellipse cx="112" cy="20" rx="4" ry="4" fill="white"/>',
         '<ellipse cx="10" cy="10" rx="30" ry="30" fill="black"/><ellipse cx="10" cy="10" rx="24" ry="24" class="wlrt"/><ellipse cx="130" cy="10" rx="30" ry="30" fill="black"/><ellipse cx="130" cy="10" rx="24" ry="24" class="wlrt"/>',
@@ -1707,9 +1709,10 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         '<path d="M40 10 A10 10 10 10 0 13 10" class="lnrt"/><path d="M40 11 A10 10 10 10 0 12 10" class="lnrt" transform="translate(100,0)"/>',
         '<line x1="-5" y1="0" x2="45" y2="0" class="lnrt"/><ellipse cx="28" cy="12" rx="13" ry="13" fill="black"/><line x1="90" y1="0" x2="140" y2="0" class="lnrt"/><ellipse cx="123" cy="12" rx="13" ry="13" fill="black"/>', 
         '<line x1="-12" y1="18" x2="13" y2="-18" class="lnrt"/><line x1="13" y1="-18" x2="38" y2="18" class="lnrt"/><line x1="100" y1="18" x2="125" y2="-18" class="lnrt"/><line x1="125" y1="-18" x2="150" y2="18" class="lnrt"/>', 
-        '<line x1="0" y1="-18" x2="42" y2="24" class="lnrt"/><line x1="0" y1="24" x2="42" y2="-18" class="lnrt"/><line x1="96" y1="-18" x2="138" y2="24" class="lnrt"/><line x1="96" y1="24" x2="138" y2="-18" class="lnrt"/>'
+        '<line x1="0" y1="-18" x2="42" y2="24" class="lnrt"/><line x1="0" y1="24" x2="42" y2="-18" class="lnrt"/><line x1="96" y1="-18" x2="138" y2="24" class="lnrt"/><line x1="96" y1="24" x2="138" y2="-18" class="lnrt"/>', 
+        '<line x1="-4" y1="-30" x2="44" y2="-6" stroke="black" stroke-width="12"/><ellipse cx="23" cy="12" rx="13" ry="13" fill="black"/><line x1="108" y1="-6" x2="156" y2="-30"  stroke="black" stroke-width="12"/><ellipse cx="128" cy="12" rx="13" ry="13" fill="black"/>'
     ]; 
-    string[8] private _eyeIds = [
+    string[9] private _eyeIds = [
         "tiny",
         "bubble",
         "froyo",
@@ -1717,7 +1720,8 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         "chuffed",
         "displeased",
         "kitty", 
-        "deceased"
+        "deceased", 
+        "angry"
     ];
     string[4] private _cheeks = [
         '', 
@@ -1749,13 +1753,25 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         "goopy",
         "kissy"
     ]; 
-    string[10] private _accessories = [
+    string[3] private _accessories = [
         '',
-        '<path d="m 62.75,68.40197 c -12.39952,0.86941 -12.32504,13.72601 -29.25,12.25 7.34151,13.53549 24.42044,13.43629 34.25,6.75 9.82956,-6.68629 4.81982,-19.68853 -5,-19 z"/><path d="m 79.09507,68.40198 c 12.39952,0.86941 12.32504,13.72601 29.25,12.25 -7.34151,13.53549 -24.42044,13.43629 -34.25,6.75 -9.82956,-6.68629 -4.81982,-19.68853 5,-19 z"/>'
+        '<path d="m 62.75,68.40197 c -12.39952,0.86941 -12.32504,13.72601 -29.25,12.25 7.34151,13.53549 24.42044,13.43629 34.25,6.75 9.82956,-6.68629 4.81982,-19.68853 -5,-19 z"/><path d="m 79.09507,68.40198 c 12.39952,0.86941 12.32504,13.72601 29.25,12.25 -7.34151,13.53549 -24.42044,13.43629 -34.25,6.75 -9.82956,-6.68629 -4.81982,-19.68853 5,-19 z"/>',
+        '<polygon points="0,0 20,15 40,0 40,30 20,15 0,30 0,0" fill="red" stroke="red" stroke-width="7" stroke-linejoin="round" transform="translate(-44,-82)"/><ellipse rx="10" ry="10" fill="red" stroke="white" stroke-width="2" transform="translate(-24.5,-67)"/>'
     ]; 
-    string[10] private _accessoryIds = [
+    string[3] private _accessoryIds = [
         "none",
-        "mustache" 
+        "mustache", 
+        "bow"
+    ]; 
+    string[3] private _filters = [
+        '', 
+        '<filter xmlns="http://www.w3.org/2000/svg" id="wavy" x="-50%" y="-50%" width="200%" height="200%"><feTurbulence baseFrequency="0.69" type="fractalNoise"><animate attributeName="baseFrequency" begin="0s" dur="20s" values="0.0812;0.0406;0.0812;0.0406" repeatCount="indefinite" easing="ease-in-out"/></feTurbulence><feDisplacementMap in="SourceGraphic" scale="12"/></filter>',
+        '<filter xmlns="http://www.w3.org/2000/svg" id="glitchy" x="-50%" y="-50%" width="200%" height="200%"><feTurbulence baseFrequency="0.5" type="fractalNoise"/><feDisplacementMap in="SourceGraphic" scale="0"><animate attributeName="scale" begin="0s" dur="0.5s" values="36.72;58.84;36.90;14.99;13.26;47.30;58.24;21.58;46.51;40.17;35.83;36.08;42.74;32.16;46.57;33.67;17.31;52.09;30.80;40.37;43.99;36.21;16.18;20.04;15.72;50.92;41.35;26.12;31.38;30.41;59.51;10.51;45.48;19.59;58.88;33.92;26.88;13.50;31.85;43.88;33.05;22.82;56.26;27.90;51.95;26.47;27.13;32.41;18.12;52.98;50.04;17.62;27.43;52.81;21.61;15.11;25.89;27.39;39.35;51.29" repeatCount="indefinite"/></feDisplacementMap></filter>'
+    ]; 
+    string[3] private _filterIds = [
+        "none",
+        "wavy",
+        "glitchy"
     ]; 
 
     function makeChub(uint256 id) internal view returns (chubData memory) {
@@ -1779,7 +1795,7 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         chub.hatId = _hatIds[rand];
 
         // random eyes 
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "7"))) % 8;
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "7"))) % 9;
         chub.eyes = _eyes[rand]; 
         chub.eyesId = _eyeIds[rand]; 
 
@@ -1796,9 +1812,15 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
 
         // random accessories 
         rand = uint256(keccak256(abi.encodePacked(id, address(this), "0"))) % 50;
-        if(rand > 1) { rand = 0; }
+        if(rand > 2) { rand = 0; }
         chub.accessory = _accessories[rand]; 
         chub.accessoryId = _accessoryIds[rand]; 
+
+        // random filters 
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "0"))) % 100;
+        if(rand > 3) { rand = 0; }
+        chub.filter = _filters[rand]; 
+        chub.filterId = _filterIds[rand]; 
 
         chub.license = "CC0";
         if(_licenses[id]==0) {
@@ -1812,27 +1834,31 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
     }
 
     function makeSVG(chubData memory chub) internal pure returns (string memory) {
-        string[16] memory parts;
+        string[20] memory parts;
 
         parts[0] = "<svg width='600' height='600' viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'>";
         parts[1] = "<style type='text/css'><![CDATA[.chub{fill:#ddd;font-family:'Comic Sans MS','Chalkboard SE','Comic Neue',cursive}";
         parts[2] = ".lnrt{stroke:#000;fill:none;stroke-width:7;stroke-linecap:round;stroke-linejoin:bezel}.lnft{stroke:#000;fill:gray;stroke-width:8;stroke-linecap:round}";
         parts[3] = ".wlrt{fill:none;stroke:white;stroke-width:3}.tt{font-size:60px;font-weight:bold;font-family:Arial}";
-        parts[4] = "]]></style><rect width='100%' height='100%' fill='#";
-        parts[5] =  chub.bgColor;
-        parts[6] = "'/><ellipse cx='300' cy='460' rx='160' ry='50' fill='#fff'/><rect x='140' y='140' width='320' height='320' fill='#fff'/>";
-        parts[7] = "<ellipse cx='300' cy='140' rx='160' ry='50' fill='#FAF6F6'/><g id='face' transform-origin='center center' transform='rotate(-5),translate(260,284)'>";
-        parts[8] = chub.ears;
-        parts[9] = chub.hat;
-        parts[10] = "<g id='face' transform-origin='center center' transform='rotate(-5),translate(260,284)'>"; 
-        parts[11] = chub.eyes; 
-        parts[12] = chub.mouth; 
-        parts[13] = chub.cheeks; 
-        parts[14] = chub.accessory; 
-        parts[15] = "</g></svg>";
+        parts[4] = "]]></style><defs>"; 
+        parts[5] = chub.filter; 
+        parts[6] = "</defs><rect width='100%' height='100%' fill='#";
+        parts[7] = chub.bgColor;
+        parts[8] = "'/><g id='chub' filter='url(#"; 
+        parts[9] = chub.filterId; 
+        parts[10] = ")'><ellipse cx='300' cy='460' rx='160' ry='50' fill='#fff'/><rect x='140' y='140' width='320' height='320' fill='#fff'/>";
+        parts[11] = "<ellipse cx='300' cy='140' rx='160' ry='50' fill='#FAF6F6'/><g id='face' transform-origin='center center' transform='rotate(-5),translate(260,284)'>";
+        parts[12] = chub.ears;
+        parts[13] = chub.hat;
+        parts[14] = "<g id='face' transform-origin='center center' transform='rotate(-5),translate(260,284)'>"; 
+        parts[15] = chub.eyes; 
+        parts[16] = chub.mouth; 
+        parts[17] = chub.cheeks; 
+        parts[18] = chub.accessory; 
+        parts[19] = "</g></svg>";
 
-        string memory output = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7]));
-        output = string(abi.encodePacked(output, parts[8], parts[9], parts[10], parts[11], parts[12], parts[13], parts[14], parts[15]));
+        string memory output = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8], parts[9]));
+        output = string(abi.encodePacked(output, parts[10], parts[11], parts[12], parts[13], parts[14], parts[15], parts[16], parts[17], parts[18], parts[19]));
 
         return output;
     }
@@ -1852,7 +1878,7 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
             output = string(abi.encodePacked('data:image/svg+xml;base64,', Base64.encode(bytes(output))));
         }
 
-        string[17] memory parts;
+        string[19] memory parts;
 
         parts[0] = '[{"trait_type":"BG Color","value":"';
         parts[1] = chub.bgColorId;
@@ -1867,13 +1893,15 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         parts[10] = '"},{"trait_type":"Cheeks","value":"';
         parts[11] = chub.cheeksId; 
         parts[12] = '"},{"trait_type":"Accessory","value":"';
-        parts[13] = chub.accessory; 
-        parts[14] = '"},{"trait_type":"License","value":"';
-        parts[15] = chub.license;
-        parts[16] = '"}]';
+        parts[13] = chub.accessoryId; 
+        parts[14] = '"},{"trait_type":"Filter","value":"';
+        parts[15] = chub.filterId; 
+        parts[16] = '"},{"trait_type":"License","value":"';
+        parts[17] = chub.license;
+        parts[18] = '"}]';
 
-        string memory json = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7]));
-        json = string(abi.encodePacked(json,parts[8],parts[9],parts[10],parts[11],parts[12],parts[13],parts[14]));
+        string memory json = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8]));
+        json = string(abi.encodePacked(json,parts[9],parts[10],parts[11],parts[12],parts[13],parts[14],parts[15],parts[16],parts[17],parts[18]));
 
         string memory nftName = string(abi.encodePacked("Chublin", ' #', toString(tokenId)));
 
