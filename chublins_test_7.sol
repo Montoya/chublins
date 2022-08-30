@@ -1697,7 +1697,7 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
     string[4] private _hats = [
         '',
         '<g transform="translate(-8,-130)"><ellipse cx="70" cy="2" rx="50" ry="15" fill="#000"/><path d="M35,0 a1,1 0 0,1 70,0" fill="#000"/><path d="M35,0 a6,1 0 1,0 70,0" stroke="#555" stroke-width="2"/></g>',
-        '<path d="M16 -112a1 1 0 0 1 100 0"/><path d="M17-112h99" stroke="#000" stroke-width="2"/><path d="M16 -112a2.5 1.5 18 1 0 100 0"/><path d="M16-112a50 6.25 0 1 0 100 0" stroke="#555" stroke-width="2" stroke-linecap="round"/><text x="52" y="-117" style="fill:#ddd;font-family:'Comic Sans MS','Comic Sans','Chalkboard SE','Comic Neue',cursive">chub</text>',
+        '<path d="M16 -112a1 1 0 0 1 100 0"/><path d="M17-112h99" stroke="#000" stroke-width="2"/><path d="M16 -112a2.5 1.5 18 1 0 100 0"/><path d="M16-112a50 6.25 0 1 0 100 0" stroke="#555" stroke-width="2" stroke-linecap="round"/><text x="52" y="-117" fill="#ddd">chub</text>',
         '<path d="M66,-146 70,-204 30,-224" class="lnrt"/><ellipse cx="30" cy="-224" rx="14" ry="14" fill="black"/>'
     ];
     string[4] private _hatIds = ["none","bowl","cap","antenna"];
@@ -1837,8 +1837,8 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         string[17] memory parts;
 
         parts[0] = "<svg width='600' height='600' viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'>";
-        parts[1] = "<style>.lnrt{stroke:#000;fill:none;stroke-width:7;stroke-linecap:round;stroke-linejoin:bezel}";
-        parts[2] = ".lnft{stroke:#000;fill:gray;stroke-width:8;stroke-linecap:round}.wlrt{stroke:#fff;stroke-width:3}</style><defs>";
+        parts[1] = "<style>.lnft{stroke:#000;fill:gray;stroke-width:8;stroke-linecap:round}.lnrt{stroke:#000;fill:none;stroke-width:7;stroke-linecap:round;stroke-linejoin:bezel}";
+        parts[2] = ".wlrt{stroke:#fff;stroke-width:3}text{font-family:'Comic Sans MS','Comic Sans','Chalkboard SE','Comic Neue',cursive;font-size:12pt}</style><defs>";
         parts[3] = chub.filter; 
         parts[4] = "</defs><rect width='100%' height='100%' fill='#";
         parts[5] = chub.bgColor;
