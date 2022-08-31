@@ -1778,7 +1778,7 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
     string[3] private _filters = [
         '<filter id="none"><feGaussianBlur in="SourceGraphic" stdDeviation="0" result="none"/></filter>', 
         '<filter id="wavy" x="-50%" y="-50%" width="200%" height="200%"><feTurbulence baseFrequency="0" type="fractalNoise" stitchTiles="noStitch"><animate id="waves" attributeName="baseFrequency" dur="6s" begin="1.5s;waves.end+1.5s" values="0;0.03;0" keyTimes="0;0.5;1" easing="ease-in-out"/></feTurbulence><feDisplacementMap in="SourceGraphic" scale="14"/></filter>',
-        '<filter id="glitchy" x="-50%" y="-50%" width="200%" height="200%"><feTurbulence baseFrequency="0.6" type="fractalNoise"/><feDisplacementMap in="SourceGraphic" scale="0"><animate id="glitch" attributeName="scale" dur="2.5s" begin="1.5s;glitch.end+3s" values="36.72;58.84;36.90;14.99;13.26;47.30;58.24;21.58;46.51;40.17;35.83;36.08;42.74;32.16;46.57;33.67;17.31;52.09;30.80;40.37;43.99;36.21;16.18;20.04;15.72;50.92;30.81"/>'
+        '<filter id="glitchy" x="-50%" y="-50%" width="200%" height="200%"><feTurbulence baseFrequency="0.6" type="fractalNoise"/><feDisplacementMap in="SourceGraphic" scale="0"><animate id="glitch" attributeName="scale" dur="2.5s" begin="1.5s;glitch.end+3s" values="36.72;58.84;36.90;14.99;13.26;47.30;58.24;21.58;46.51;40.17;35.83;36.08;42.74;32.16;46.57;33.67;17.31;52.09;30.80;40.37;43.99;36.21;16.18;20.04;15.72;50.92;30.81"/></feDisplacementMap></filter>'
     ]; 
     string[3] private _filterIds = [
         "none",
