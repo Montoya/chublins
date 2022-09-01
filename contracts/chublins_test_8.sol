@@ -1795,14 +1795,14 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         chub.bgColor = _bgColors[rand];
 
         // random ears
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "5"))) % 12;
-        if(rand > 10) { rand = 2; } else if(rand > 8) { rand = 1; } else { rand = 0; }
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "5"))) % 10;
+        if(rand >= _ears.length) { rand = 0; } 
         chub.ears = _ears[rand];
         chub.earsId = _earIds[rand];
 
         // random hats
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "6"))) % 9;
-        if(rand > 7) { rand = 3; } else if(rand > 6) { rand = 2; } else if(rand > 5) { rand = 1; } else { rand = 0; }
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "6"))) % 12;
+        if(rand >= _hats.length) { rand = 0; }
         chub.hat = _hats[rand];
         chub.hatId = _hatIds[rand];
 
@@ -1812,8 +1812,8 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         chub.eyesId = _eyeIds[rand]; 
 
         // random cheeks 
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "8"))) % 75;
-        if(rand > _cheeks.length) { rand = 0; }
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "8"))) % 48;
+        if(rand >= _cheeks.length) { rand = 0; }
         chub.cheeks = _cheeks[rand]; 
         chub.cheeksId = _cheekIds[rand]; 
 
@@ -1823,14 +1823,14 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         chub.mouthId = _mouthIds[rand]; 
 
         // random accessories 
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "0"))) % 100;
-        if(rand > _accessories.length) { rand = 0; }
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "0"))) % 60;
+        if(rand >= _accessories.length) { rand = 0; }
         chub.accessory = _accessories[rand]; 
         chub.accessoryId = _accessoryIds[rand]; 
 
         // random filters 
         rand = uint256(keccak256(abi.encodePacked(id, address(this), "3"))) % 100;
-        if(rand > _filters.length) { rand = 0; }
+        if(rand >= _filters.length) { rand = 0; }
         chub.filter = _filters[rand]; 
         chub.filterId = _filterIds[rand]; 
 
