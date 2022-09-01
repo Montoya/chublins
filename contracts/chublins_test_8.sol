@@ -1650,16 +1650,22 @@ library Address {
 contract Chublins is Ownable, ERC721A, ReentrancyGuard {
     constructor() ERC721A("Chublins", "CHUBLIN") {}
 
-    uint256 private _maxSupply = 8888;
+    uint256 private _maxSupply = 0; // default supply = 0 which means no minting!
     uint256 private _basePrice = 24000000; // 0.024 ETH
 
     bool private _pngsAvailable = false;
     string private _baseTokenURI = "https://chublins.xyz/tokens/"; // for NFTs rendered off-chain (to be compatible with Twitter, etc.)
-    uint256[8888] private _licenses; // will hold license status of all NFTs
+    uint8[8888] private _licenses; // will hold license status of all NFTs
     bool[8888] private _returnPNG; // if true for an ID, then return a hosted PNG instead of onchain SVG
+
+    function enableMinting(uint256 supply) external onlyOwner {
+        require(_maxSupply == 0); 
+        _maxSupply = supply; 
+    }
 
     function mint(uint256 quantity) external payable {
         require(_maxSupply >= (totalSupply() + quantity));
+        require(quantity < 11); // max 10 per transaction 
         require(msg.value >= (_basePrice * quantity));
         _mint(msg.sender, quantity);
     }
@@ -1928,10 +1934,14 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         return _maxSupply;
     }
 
-    function reduceSupply(uint256 value) public onlyOwner(){
+    function reduceSupply(uint256 value) public onlyOwner {
         require(value >= totalSupply() && value < _maxSupply, "Value not in required bounds");
         _maxSupply = value;
     }
+
+    function setPrice(uint256 price) public onlyOwner { 
+		_basePrice = price; 
+	}
 
     function _baseURI() internal view virtual override returns (string memory) {
         return _baseTokenURI;
@@ -1966,7 +1976,7 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         return("Toggled to off-chain PNG");
     }
 
-    function modifyLicense(uint256 tokenId, uint256 level) public returns(string memory){
+    function modifyLicense(uint256 tokenId, uint8 level) public returns(string memory){
         require(ownerOf(tokenId) == msg.sender, "Only the owner of this token can perform this action");
         require(level == 1 || level==2, "Allowed values for level can only be 1 or 2");
         if(_licenses[tokenId] == 0) {
