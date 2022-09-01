@@ -1654,10 +1654,11 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
     uint256 private _basePrice = 24000000; // 0.024 ETH
 
     bool private _pngsAvailable = false;
-    string private _baseTokenURI = "https://chublins.xyz/tokens/"; // for NFTs rendered off-chain (to be compatible with Twitter, etc.)
+    string private _baseTokenURI = "https://chublins.xyz/pngs/"; // for NFTs rendered off-chain (to be compatible with Twitter, etc.)
     uint8[8888] private _licenses; // will hold license status of all NFTs
     bool[8888] private _returnPNG; // if true for an ID, then return a hosted PNG instead of onchain SVG
 
+    // this can only be done once (to start the mint)
     function enableMinting(uint256 supply) external onlyOwner {
         require(_maxSupply == 0); 
         _maxSupply = supply; 
@@ -1868,7 +1869,7 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         parts[6] = "'/><g id='chub'"; 
         parts[7] = filterUrl; 
         parts[8] = "><ellipse cx='300' cy='460' rx='160' ry='50' fill='#fff'/><path fill='#fff' d='M140 140h320v320H140z'/>";
-        parts[9] = "<ellipse cx='300' cy='140' rx='160' ry='50' fill='#FAF6F6'/><g id='face' transform='rotate(-5 3422.335 -2819.49)'>";
+        parts[9] = "<ellipse cx='300' cy='140' rx='160' ry='50' fill='#F8F4F4'/><g id='face' transform='rotate(-5 3422.335 -2819.49)'>";
         parts[10] = chub.ears;
         parts[11] = chub.hat;
         parts[12] = chub.eyes; 
