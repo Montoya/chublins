@@ -11,7 +11,7 @@ m0nt0y4.eth
 
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.16;
 
 // ERC721A Contracts v4.1.0
 // Creator: Chiru Labs
@@ -1642,63 +1642,279 @@ library Address {
     }
 }
 
-
-// Chublins Contract v0.1.0
-// Creator: Christian Montoya
-
-contract Chublins is Ownable, ERC721A, ReentrancyGuard {
-    constructor() ERC721A("Chublins", "CHUBLIN") {}
-
-    uint256 private _maxSupply = 0; // this is set later to start minting
-    uint256 private _basePrice = 0.01 ether; 
-
-    bool private _pngsAvailable = false;
-    string private _baseTokenURI = "https://chublins.xyz/pngs/"; // for NFTs rendered off-chain (to be compatible with Twitter, etc.)
-    uint8[8888] private _licenses; // will hold license status of all NFTs
-    bool[8888] private _returnPNG; // if true for an ID, then return a hosted PNG instead of onchain SVG
-
-    // this can only be done once (to start the mint)
-    function enableMinting(uint256 supply) external onlyOwner {
-        require(_maxSupply == 0); 
-        _maxSupply = supply; 
+/**
+ * @dev These functions deal with verification of Merkle Tree proofs.
+ *
+ * The proofs can be generated using the JavaScript library
+ * https://github.com/miguelmota/merkletreejs[merkletreejs].
+ * Note: the hashing algorithm should be keccak256 and pair sorting should be enabled.
+ *
+ * See `test/utils/cryptography/MerkleProof.test.js` for some examples.
+ *
+ * WARNING: You should avoid using leaf values that are 64 bytes long prior to
+ * hashing, or use a hash function other than keccak256 for hashing leaves.
+ * This is because the concatenation of a sorted pair of internal nodes in
+ * the merkle tree could be reinterpreted as a leaf value.
+ */
+library MerkleProof {
+    /**
+     * @dev Returns true if a `leaf` can be proved to be a part of a Merkle tree
+     * defined by `root`. For this, a `proof` must be provided, containing
+     * sibling hashes on the branch from the leaf to the root of the tree. Each
+     * pair of leaves and each pair of pre-images are assumed to be sorted.
+     */
+    function verify(
+        bytes32[] memory proof,
+        bytes32 root,
+        bytes32 leaf
+    ) internal pure returns (bool) {
+        return processProof(proof, leaf) == root;
     }
 
-    function mint(uint256 quantity) external payable {
+    /**
+     * @dev Calldata version of {verify}
+     *
+     * _Available since v4.7._
+     */
+    function verifyCalldata(
+        bytes32[] calldata proof,
+        bytes32 root,
+        bytes32 leaf
+    ) internal pure returns (bool) {
+        return processProofCalldata(proof, leaf) == root;
+    }
+
+    /**
+     * @dev Returns the rebuilt hash obtained by traversing a Merkle tree up
+     * from `leaf` using `proof`. A `proof` is valid if and only if the rebuilt
+     * hash matches the root of the tree. When processing the proof, the pairs
+     * of leafs & pre-images are assumed to be sorted.
+     *
+     * _Available since v4.4._
+     */
+    function processProof(bytes32[] memory proof, bytes32 leaf) internal pure returns (bytes32) {
+        bytes32 computedHash = leaf;
+        for (uint256 i = 0; i < proof.length; i++) {
+            computedHash = _hashPair(computedHash, proof[i]);
+        }
+        return computedHash;
+    }
+
+    /**
+     * @dev Calldata version of {processProof}
+     *
+     * _Available since v4.7._
+     */
+    function processProofCalldata(bytes32[] calldata proof, bytes32 leaf) internal pure returns (bytes32) {
+        bytes32 computedHash = leaf;
+        for (uint256 i = 0; i < proof.length; i++) {
+            computedHash = _hashPair(computedHash, proof[i]);
+        }
+        return computedHash;
+    }
+
+    /**
+     * @dev Returns true if the `leaves` can be proved to be a part of a Merkle tree defined by
+     * `root`, according to `proof` and `proofFlags` as described in {processMultiProof}.
+     *
+     * _Available since v4.7._
+     */
+    function multiProofVerify(
+        bytes32[] memory proof,
+        bool[] memory proofFlags,
+        bytes32 root,
+        bytes32[] memory leaves
+    ) internal pure returns (bool) {
+        return processMultiProof(proof, proofFlags, leaves) == root;
+    }
+
+    /**
+     * @dev Calldata version of {multiProofVerify}
+     *
+     * _Available since v4.7._
+     */
+    function multiProofVerifyCalldata(
+        bytes32[] calldata proof,
+        bool[] calldata proofFlags,
+        bytes32 root,
+        bytes32[] memory leaves
+    ) internal pure returns (bool) {
+        return processMultiProofCalldata(proof, proofFlags, leaves) == root;
+    }
+
+    /**
+     * @dev Returns the root of a tree reconstructed from `leaves` and the sibling nodes in `proof`,
+     * consuming from one or the other at each step according to the instructions given by
+     * `proofFlags`.
+     *
+     * _Available since v4.7._
+     */
+    function processMultiProof(
+        bytes32[] memory proof,
+        bool[] memory proofFlags,
+        bytes32[] memory leaves
+    ) internal pure returns (bytes32 merkleRoot) {
+        // This function rebuild the root hash by traversing the tree up from the leaves. The root is rebuilt by
+        // consuming and producing values on a queue. The queue starts with the `leaves` array, then goes onto the
+        // `hashes` array. At the end of the process, the last hash in the `hashes` array should contain the root of
+        // the merkle tree.
+        uint256 leavesLen = leaves.length;
+        uint256 totalHashes = proofFlags.length;
+
+        // Check proof validity.
+        require(leavesLen + proof.length - 1 == totalHashes, "MerkleProof: invalid multiproof");
+
+        // The xxxPos values are "pointers" to the next value to consume in each array. All accesses are done using
+        // `xxx[xxxPos++]`, which return the current value and increment the pointer, thus mimicking a queue's "pop".
+        bytes32[] memory hashes = new bytes32[](totalHashes);
+        uint256 leafPos = 0;
+        uint256 hashPos = 0;
+        uint256 proofPos = 0;
+        // At each step, we compute the next hash using two values:
+        // - a value from the "main queue". If not all leaves have been consumed, we get the next leaf, otherwise we
+        //   get the next hash.
+        // - depending on the flag, either another value for the "main queue" (merging branches) or an element from the
+        //   `proof` array.
+        for (uint256 i = 0; i < totalHashes; i++) {
+            bytes32 a = leafPos < leavesLen ? leaves[leafPos++] : hashes[hashPos++];
+            bytes32 b = proofFlags[i] ? leafPos < leavesLen ? leaves[leafPos++] : hashes[hashPos++] : proof[proofPos++];
+            hashes[i] = _hashPair(a, b);
+        }
+
+        if (totalHashes > 0) {
+            return hashes[totalHashes - 1];
+        } else if (leavesLen > 0) {
+            return leaves[0];
+        } else {
+            return proof[0];
+        }
+    }
+
+    /**
+     * @dev Calldata version of {processMultiProof}
+     *
+     * _Available since v4.7._
+     */
+    function processMultiProofCalldata(
+        bytes32[] calldata proof,
+        bool[] calldata proofFlags,
+        bytes32[] memory leaves
+    ) internal pure returns (bytes32 merkleRoot) {
+        // This function rebuild the root hash by traversing the tree up from the leaves. The root is rebuilt by
+        // consuming and producing values on a queue. The queue starts with the `leaves` array, then goes onto the
+        // `hashes` array. At the end of the process, the last hash in the `hashes` array should contain the root of
+        // the merkle tree.
+        uint256 leavesLen = leaves.length;
+        uint256 totalHashes = proofFlags.length;
+
+        // Check proof validity.
+        require(leavesLen + proof.length - 1 == totalHashes, "MerkleProof: invalid multiproof");
+
+        // The xxxPos values are "pointers" to the next value to consume in each array. All accesses are done using
+        // `xxx[xxxPos++]`, which return the current value and increment the pointer, thus mimicking a queue's "pop".
+        bytes32[] memory hashes = new bytes32[](totalHashes);
+        uint256 leafPos = 0;
+        uint256 hashPos = 0;
+        uint256 proofPos = 0;
+        // At each step, we compute the next hash using two values:
+        // - a value from the "main queue". If not all leaves have been consumed, we get the next leaf, otherwise we
+        //   get the next hash.
+        // - depending on the flag, either another value for the "main queue" (merging branches) or an element from the
+        //   `proof` array.
+        for (uint256 i = 0; i < totalHashes; i++) {
+            bytes32 a = leafPos < leavesLen ? leaves[leafPos++] : hashes[hashPos++];
+            bytes32 b = proofFlags[i] ? leafPos < leavesLen ? leaves[leafPos++] : hashes[hashPos++] : proof[proofPos++];
+            hashes[i] = _hashPair(a, b);
+        }
+
+        if (totalHashes > 0) {
+            return hashes[totalHashes - 1];
+        } else if (leavesLen > 0) {
+            return leaves[0];
+        } else {
+            return proof[0];
+        }
+    }
+
+    function _hashPair(bytes32 a, bytes32 b) private pure returns (bytes32) {
+        return a < b ? _efficientHash(a, b) : _efficientHash(b, a);
+    }
+
+    function _efficientHash(bytes32 a, bytes32 b) private pure returns (bytes32 value) {
+        /// @solidity memory-safe-assembly
+        assembly {
+            mstore(0x00, a)
+            mstore(0x20, b)
+            value := keccak256(0x00, 0x40)
+        }
+    }
+}
+
+
+
+// Chublins Reborn Contract v0.0.1
+// Creator: Christian Montoya
+contract ChublinsReborn is Ownable, ERC721A, ReentrancyGuard { 
+    constructor() ERC721A("Chublins", "CHBLN") {}
+    
+    uint256 private _basePrice = 0.01 ether; 
+    uint256 private _maxSupply = 4444; 
+    bytes32 public merkleRoot; 
+    bool private _publicMintOpen; // enable after allowlist mint period
+    bool private _pngsAvailable = false; // when true, PNGs exist for all Chublins
+    mapping(address => bool) public claimed; // one call per address 
+    string private _baseTokenURI = "https://chublins.xyz/pngs/"; // for NFTs rendered off-chain (to be compatible with Twitter, etc.)
+    uint8[4444] private _chubFlags; // will track license status, whether to return PNG or SVG
+
+    function openPublicMint() external onlyOwner {
+        _publicMintOpen = true; 
+    }
+
+    function setMerkleRoot(bytes32 _merkleRoot) external onlyOwner { 
+        merkleRoot = _merkleRoot; 
+    }
+
+    function toBytes32(address addr) pure internal returns (bytes32) {
+        return bytes32(uint256(uint160(addr)));
+    }
+
+    function allowListMint(uint8 quantity, bytes32[] calldata merkleProof) external payable {
         require(_maxSupply >= (totalSupply() + quantity));
-        require(quantity < 11); // max 10 per transaction 
-        require(msg.sender==tx.origin); 
+        require(0 < quantity && quantity < 3); // 1 or 2 per address
         require(msg.value >= (_basePrice * quantity));
+        require(MerkleProof.verify(merkleProof, merkleRoot, toBytes32(msg.sender)) == true);
+        require(claimed[msg.sender] == false); 
+        claimed[msg.sender] = true; 
         _mint(msg.sender, quantity);
     }
 
-    struct chubData {
-        string bgColor;
-        string bgColorId;
-        string ears;
-        string earsId;
-        string hat;
-        string hatId;
-        string eyes; 
-        string eyesId; 
-        string cheeks; 
-        string cheeksId; 
-        string mouth; 
-        string mouthId; 
-        string accessory; 
-        string accessoryId; 
-        string filter; 
-        string filterId; 
-        string license;
+    function mint(uint8 quantity) external payable {
+        require(_publicMintOpen && _maxSupply >= (totalSupply() + quantity)); 
+        require(0 < quantity && quantity < 3); // 1 or 2 per address
+        require(msg.value >= (_basePrice * quantity));
+        require(claimed[msg.sender] == false); 
+        claimed[msg.sender] = true; 
+        _mint(msg.sender, quantity);
     }
+
+    // this is for raffles and for making secondary buyers from first collection whole 
+    function ownerMint(uint8 quantity) external onlyOwner {
+        require(_maxSupply >= (totalSupply() + quantity));
+        _mint(msg.sender, quantity);
+    }
+
+    // traits
 
     string[8] private _bgColors = ["c0caff","ff6b6b","ffdd59","0be881","fd9644","a55eea","778ca3","f8a5c2"];
     string[8] private _bgColorIds = ["sky","tomato","lemon","jade","clementine","royal","slate","sakura"];
+
     string[3] private _ears = [
         '',
 		'<path d="M-46 -140 -26 -170 -6 -140" class="lnft"/><path d="M124 -137 144 -167 164 -137" class="lnft"/>',
 		'<path d="M-48,-142 a0.9,1 0 0,1 60,-8" class="lnft th"/><path d="M116,-146 a0.9,1 0 0,1 60,12" class="lnft th"/>'
 	];
     string[3] private _earIds = ["none","cat","bear"];
+
     string[4] private _hats = [
         '',
         '<ellipse cx="62" cy="-128" rx="50" ry="15"/><path d="M27,-130 a1,1 0 0,1 70,0"/><path d="M27,-130 a6,1 0 1,0 70,0" stroke="gray" stroke-width="2"/>',
@@ -1706,6 +1922,7 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         '<path d="m62-146 4-58-40-20" class="lnrt"/><circle cx="26" cy="-224" r="14"/>'
     ];
     string[4] private _hatIds = ["none","bowl","cap","antenna"];
+
     string[11] private _eyes = [
         '<circle cx="10" cy="10" r="10"/><circle cx="130" cy="10" r="10"/>',
         '<g id="eye" transform="scale(2)"><path d="M5-7v4.522m-8.334-.87L-.422.112m13.756-3.46L10.422.112" class="lnrt tn"/><circle r="8" cy="5" cx="5"/></g><use xlink:href="#eye" transform="translate(120,0)"/>',
@@ -1732,6 +1949,7 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         "angry",
         "dizzy"
     ];
+
     string[5] private _cheeks = [
         '', 
         '<ellipse cx="10" cy="60" rx="20" ry="10" fill="pink"/><ellipse cx="130" cy="60" rx="20" ry="10" fill="pink"/>', 
@@ -1746,6 +1964,7 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         "tattoo",
         "hearts"
     ]; 
+
     string[9] private _mouths = [
         '<path d="M40,100 a1,1 0 0,0 60,0"/>',
         '<path d="m40 116 60-0" class="lnrt"/>',
@@ -1768,6 +1987,7 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         "goopy",
         "kissy"
     ]; 
+
     string[5] private _accessories = [
         '',
         '<path id="ac" d="m 62.75,68.40197 c -12.39952,0.86941 -12.32504,13.72601 -29.25,12.25 7.34151,13.53549 24.42044,13.43629 34.25,6.75 9.82956,-6.68629 4.81982,-19.68853 -5,-19 z"/><use xlink:href="#ac" transform="scale(-1,1),translate(-142,0)"/>',
@@ -1782,153 +2002,127 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
         "pop",
         "sparkle"
     ]; 
+
     string[3] private _filters = [
         '', 
-        '<filter id="wavy" x="-50%" y="-50%" width="200%" height="200%"><feTurbulence baseFrequency="0" type="fractalNoise" stitchTiles="noStitch"><animate id="waves" attributeName="baseFrequency" dur="6s" begin="1.5s;waves.end+1.5s" values="0;0.03;0" keyTimes="0;0.5;1" easing="ease-in-out"/></feTurbulence><feDisplacementMap in="SourceGraphic" scale="14"/></filter>',
-        '<filter id="glitchy" x="-50%" y="-50%" width="200%" height="200%"><feTurbulence baseFrequency="0.6" type="fractalNoise"/><feDisplacementMap in="SourceGraphic" scale="0"><animate id="glitch" attributeName="scale" dur="2.5s" begin="1.5s;glitch.end+3s" values="36.72;58.84;36.90;14.99;13.26;47.30;58.24;21.58;46.51;40.17;35.83;36.08;42.74;32.16;46.57;33.67;17.31;52.09;30.80;40.37;43.99;36.21;16.18;20.04;15.72;50.92;30.81"/></feDisplacementMap></filter>'
+        '<feTurbulence baseFrequency="0" type="fractalNoise" stitchTiles="noStitch"><animate id="waves" attributeName="baseFrequency" dur="6s" begin="1.5s;waves.end+1.5s" values="0;0.03;0" keyTimes="0;0.5;1" easing="ease-in-out"/></feTurbulence><feDisplacementMap in="SourceGraphic" scale="14"/>',
+        '<feTurbulence baseFrequency="0.6" type="fractalNoise"/><feDisplacementMap in="SourceGraphic" scale="0"><animate id="glitch" attributeName="scale" dur="2.5s" begin="1.5s;glitch.end+3s" values="36.72;58.84;36.90;14.99;13.26;47.30;58.24;21.58;46.51;40.17;35.83;36.08;42.74;32.16;46.57;33.67;17.31;52.09;30.80;40.37;43.99;36.21;16.18;20.04;15.72;50.92;30.81"/></feDisplacementMap>'
     ]; 
-    string[3] private _filterIds = [
-        "none",
-        "wavy",
-        "glitchy"
-    ]; 
+    string[3] private _filterIds = ["none", "wavy", "glitchy"]; 
+
+    string[3] private _licenses = ["ARR", "CC BY-NC", "CC0"]; 
+    
+    function getLicense(uint256 id) public view returns (string memory) { 
+        uint8 licenseId = _chubFlags[id] % 10; // 0, 1 or 2
+        return _licenses[licenseId]; 
+    }
+
+    function usePng(uint256 id) public view returns (bool) { 
+        return _chubFlags[id] >= 10; 
+    }
+
+    struct chubData {
+        string bgColor;
+        string bgColorId;
+        string ears;
+        string earsId;
+        string hat;
+        string hatId;
+        string eyes; 
+        string eyesId; 
+        string cheeks; 
+        string cheeksId; 
+        string mouth; 
+        string mouthId; 
+        string accessory; 
+        string accessoryId; 
+        string filter; 
+        string filterId; 
+        string license;
+    }
 
     function makeChub(uint256 id) internal view returns (chubData memory) {
         chubData memory chub;
 
         // random background color
-        uint256 rand = uint256(keccak256(abi.encodePacked(id, address(this), "4"))) % _bgColors.length;
-        chub.bgColorId = _bgColorIds[rand];
+        uint256 rand = uint256(keccak256(abi.encodePacked(id, address(this), "1"))) % _bgColors.length;
         chub.bgColor = _bgColors[rand];
+        chub.bgColorId = _bgColorIds[rand];
 
         // random ears
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "5"))) % 10;
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "2"))) % 10;
         if(rand >= _ears.length) { rand = 0; } 
         chub.ears = _ears[rand];
         chub.earsId = _earIds[rand];
 
         // random hats
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "6"))) % 12;
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "3"))) % 12;
         if(rand >= _hats.length) { rand = 0; }
         chub.hat = _hats[rand];
         chub.hatId = _hatIds[rand];
 
         // random eyes 
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "7"))) % _eyes.length;
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "4"))) % _eyes.length;
         chub.eyes = _eyes[rand]; 
         chub.eyesId = _eyeIds[rand]; 
 
         // random cheeks 
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "8"))) % 48;
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "5"))) % 48;
         if(rand >= _cheeks.length) { rand = 0; }
         chub.cheeks = _cheeks[rand]; 
         chub.cheeksId = _cheekIds[rand]; 
 
         // random mouths
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "9"))) % _mouths.length;
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "6"))) % _mouths.length;
         chub.mouth = _mouths[rand]; 
         chub.mouthId = _mouthIds[rand]; 
 
         // random accessories 
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "0"))) % 60;
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "7"))) % 60;
         if(rand >= _accessories.length) { rand = 0; }
         chub.accessory = _accessories[rand]; 
         chub.accessoryId = _accessoryIds[rand]; 
 
         // random filters 
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "3"))) % 100;
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "8"))) % 100;
         if(rand >= _filters.length) { rand = 0; }
         chub.filter = _filters[rand]; 
         chub.filterId = _filterIds[rand]; 
 
-        chub.license = "CC0";
-        if(_licenses[id]==0) {
-            chub.license = "ARR";
-        }
-        else if(_licenses[id]==1) {
-            chub.license = "CC BY-NC";
-        }
+        chub.license = getLicense(id); 
 
-        return chub;
+        return chub; 
     }
 
     function makeSVG(chubData memory chub) internal pure returns (string memory) {
-        string[17] memory parts;
-
         string memory filterUrl = ''; 
+        string memory filter = ''; 
         if(bytes(chub.filter).length > 0) { 
-            filterUrl = string(abi.encodePacked(" filter='url(#",chub.filterId,")'"));
+            filterUrl = string.concat(" filter='url(#",chub.filterId,")'"); 
+            filter = string.concat('<filter id="',chub.filterId,'" x="-50%" y="-50%" width="200%" height="200%">',chub.filter,'</filter>'); 
         }
 
-        parts[0] = "<svg width='600' height='600' viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>";
-        parts[1] = "<style>.lnft,.lnrt{stroke:#000;stroke-linecap:round}.lnft{fill:gray;stroke-width:8;}.lnrt{fill:none;stroke-width:7;stroke-linejoin:bezel}";
-        parts[2] = ".th{stroke-width:12}.tn{stroke-width:4}.wlrt{stroke:#fff;stroke-width:3}text{font-family:'Comic Sans MS','Comic Sans','Chalkboard SE','Comic Neue',cursive;font-size:12pt}</style><defs>";
-        parts[3] = chub.filter; 
-        parts[4] = "</defs><rect width='100%' height='100%' fill='#";
-        parts[5] = chub.bgColor;
-        parts[6] = "'/><g id='chub'"; 
-        parts[7] = filterUrl; 
-        parts[8] = "><ellipse cx='300' cy='460' rx='160' ry='50' fill='#fff'/><path fill='#fff' d='M140 140h320v320H140z'/>";
-        parts[9] = "<ellipse cx='300' cy='140' rx='160' ry='50' fill='#F8F4F4'/><g id='face' transform='rotate(-5 3422.335 -2819.49)'>";
-        parts[10] = chub.ears;
-        parts[11] = chub.hat;
-        parts[12] = chub.eyes; 
-        parts[13] = chub.mouth; 
-        parts[14] = chub.cheeks; 
-        parts[15] = chub.accessory; 
-        parts[16] = "</g></g></svg>";
-
-        string memory output = string(abi.encodePacked(parts[0],parts[1],parts[2],parts[3],parts[4],parts[5],parts[6],parts[7]));
-        output = string(abi.encodePacked(output,parts[8],parts[9],parts[10],parts[11],parts[12],parts[13],parts[14],parts[15],parts[16]));
-
-        return output;
+        return string.concat("<svg width='600' height='600' viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><style>.lnft,.lnrt{stroke:#000;stroke-linecap:round}.lnft{fill:gray;stroke-width:8;}.lnrt{fill:none;stroke-width:7;stroke-linejoin:bezel}.th{stroke-width:12}.tn{stroke-width:4}.wlrt{stroke:#fff;stroke-width:3}text{font-family:'Comic Sans MS','Comic Sans','Chalkboard SE','Comic Neue',cursive;font-size:12pt}</style><defs>",chub.filter,"</defs><rect width='100%' height='100%' fill='#",chub.bgColor,"'/><g id='chub'",filterUrl,"><ellipse cx='300' cy='460' rx='160' ry='50' fill='#fff'/><path fill='#fff' d='M140 140h320v320H140z'/><ellipse cx='300' cy='140' rx='160' ry='50' fill='#F8F4F4'/><g id='face' transform='rotate(-5 3422.335 -2819.49)'>",chub.ears,chub.hat,chub.eyes,chub.mouth,chub.cheeks,chub.accessory,"</g></g></svg>"); 
+        
     }
 
     function tokenURI(uint256 tokenId) override public view returns (string memory) {
-        require(ownerOf(tokenId) != address(0), "ERC721: tokenURI query for nonexistent token");
-
+        if (!_exists(tokenId)) revert URIQueryForNonexistentToken();
+        
         chubData memory chub = makeChub(tokenId);
-        string memory output;
 
-        if(_returnPNG[tokenId] == true && _pngsAvailable == true) {
-            // don't return on-chain SVG
-            output = string(abi.encodePacked(_baseTokenURI, _toString(tokenId), '.png'));
+        string memory output; 
+        if(usePng(tokenId) == true && _pngsAvailable == true) {
+            output = string.concat(_baseTokenURI, _toString(tokenId), ".png"); 
         }
-        else {
-            output = makeSVG(chub);
-            output = string(abi.encodePacked('data:image/svg+xml;base64,', Base64.encode(bytes(output))));
+        else { 
+            output = string.concat("data:image/svg+xml;base64,", Base64.encode(bytes(makeSVG(chub)))); 
         }
 
-        string[19] memory parts;
+        string memory json = string.concat('[{"trait_type":"BG Color","value":"',string(chub.bgColorId),'"},{"trait_type":"Ears","value":"',string(chub.earsId),'"},{"trait_type":"Hat","value":"',string(chub.hatId),'"},{"trait_type":"Eyes","value":"',string(chub.eyesId),'"},{"trait_type":"Mouth","value":"',string(chub.mouthId),'"},{"trait_type":"Cheeks","value":"',string(chub.cheeksId),'"},{"trait_type":"Accessory","value":"',string(chub.accessoryId),'"},{"trait_type":"Filter","value":"',string(chub.filterId),'"},{"trait_type":"License","value":"',string(chub.license),'"}]'); 
 
-        parts[0] = '[{"trait_type":"BG Color","value":"';
-        parts[1] = chub.bgColorId;
-        parts[2] = '"},{"trait_type":"Ears","value":"';
-        parts[3] = chub.earsId;
-        parts[4] = '"},{"trait_type":"Hat","value":"';
-        parts[5] = chub.hatId;
-        parts[6] = '"},{"trait_type":"Eyes","value":"';
-        parts[7] = chub.eyesId; 
-        parts[8] = '"},{"trait_type":"Mouth","value":"';
-        parts[9] = chub.mouthId; 
-        parts[10] = '"},{"trait_type":"Cheeks","value":"';
-        parts[11] = chub.cheeksId; 
-        parts[12] = '"},{"trait_type":"Accessory","value":"';
-        parts[13] = chub.accessoryId; 
-        parts[14] = '"},{"trait_type":"Filter","value":"';
-        parts[15] = chub.filterId; 
-        parts[16] = '"},{"trait_type":"License","value":"';
-        parts[17] = chub.license;
-        parts[18] = '"}]';
-
-        string memory json = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8]));
-        json = string(abi.encodePacked(json,parts[9],parts[10],parts[11],parts[12],parts[13],parts[14],parts[15],parts[16],parts[17],parts[18]));
-
-        json = string(abi.encodePacked('{"name":"Chublin #',_toString(tokenId),'", "description":"A Chublin born of the blockchain.","attributes":',json));
-        json = Base64.encode(bytes(string(abi.encodePacked(json, ', "image":"', output, '"}'))));
-        output = string(abi.encodePacked('data:application/json;base64,', json));
-
-        return output;
+        json = string.concat('{"name":"Chublin #',_toString(tokenId),'", "description":"A Chublin born of the blockchain.","attributes":',json,', "image":"', output, '"}'); 
+        return string.concat('data:application/json;base64,',Base64.encode(bytes(json))); 
     }
 
     function maxSupply() public view returns (uint256) {
@@ -1936,7 +2130,7 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
     }
 
     function reduceSupply(uint256 value) public onlyOwner {
-        require(value >= totalSupply() && value < _maxSupply, "Value not in required bounds");
+        require(value >= totalSupply() && value < _maxSupply);
         _maxSupply = value;
     }
 
@@ -1954,42 +2148,48 @@ contract Chublins is Ownable, ERC721A, ReentrancyGuard {
 
     function withdrawFunds() external onlyOwner nonReentrant {
         (bool success, ) = msg.sender.call{value: address(this).balance}("");
-        require(success, "Transfer failed");
+        require(success);
     }
 
-    function togglePNGsAvailable() public onlyOwner returns(string memory) {
-        if(_pngsAvailable == true) {
+    function pngsAvailable() public view returns (bool) {
+        return _pngsAvailable;
+    }
+
+    function togglePNGsAvailable() public onlyOwner {
+        if(_pngsAvailable) {
             _pngsAvailable = false;
-            return("Indicating that PNGs are not available");
         }
         _pngsAvailable = true;
-        return("Indicating that PNGs are available");
     }
 
-    function toggleOnChainArt(uint256 tokenId) public returns(string memory){
-        require(ownerOf(tokenId) == msg.sender, "Only the owner of this token can perform this action");
-        if(_returnPNG[tokenId] == true) {
-            _returnPNG[tokenId] = false;
-            return("Toggled to on-chain SVG");
-        }
+    function toggleOnChainArt(uint256 tokenId) public returns(bool){
+        require(ownerOf(tokenId) == msg.sender);
 
-        _returnPNG[tokenId] = true;
-        return("Toggled to off-chain PNG");
+        if(usePng(tokenId)) { 
+            _chubFlags[tokenId] -= 10; 
+            return false; 
+        }
+        else { 
+            _chubFlags[tokenId] += 10; 
+            return true; 
+        }
     }
 
     function modifyLicense(uint256 tokenId, uint8 level) public returns(string memory){
-        require(ownerOf(tokenId) == msg.sender, "Only the owner of this token can perform this action");
-        require(level == 1 || level==2, "Allowed values for level can only be 1 or 2");
-        if(_licenses[tokenId] == 0) {
+        require(ownerOf(tokenId) == msg.sender);
+        require(level == 1 || level==2);
+        uint8 currentLicense = _chubFlags[tokenId] % 10; // 0, 1 or 2
+
+        if(currentLicense == 0) {
             // if current level is 0, you can set it to 1 or 2
-            _licenses[tokenId] = level;
-            return("License level was raised successfully");
+            _chubFlags[tokenId] += level;
+            return _licenses[level]; 
         }
-        else if(level == 2) {
+        else if(currentLicense == 1 && level == 2) {
             // if current level is 1 or 2, you can set it to 2
-            _licenses[tokenId] = level;
-            return("License level was raised successfully");
+            _chubFlags[tokenId] += 1;
+            return _licenses[level]; 
         }
-        revert("License level was not changed");
+        revert("Unchange"); 
     }
 }
