@@ -1317,65 +1317,6 @@ abstract contract Ownable is Context {
     }
 }
 
-/**
- * @dev Contract module that helps prevent reentrant calls to a function.
- *
- * Inheriting from `ReentrancyGuard` will make the {nonReentrant} modifier
- * available, which can be applied to functions to make sure there are no nested
- * (reentrant) calls to them.
- *
- * Note that because there is a single `nonReentrant` guard, functions marked as
- * `nonReentrant` may not call one another. This can be worked around by making
- * those functions `private`, and then adding `external` `nonReentrant` entry
- * points to them.
- *
- * TIP: If you would like to learn more about reentrancy and alternative ways
- * to protect against it, check out our blog post
- * https://blog.openzeppelin.com/reentrancy-after-istanbul/[Reentrancy After Istanbul].
- */
-abstract contract ReentrancyGuard {
-    // Booleans are more expensive than uint256 or any type that takes up a full
-    // word because each write operation emits an extra SLOAD to first read the
-    // slot's contents, replace the bits taken up by the boolean, and then write
-    // back. This is the compiler's defense against contract upgrades and
-    // pointer aliasing, and it cannot be disabled.
-
-    // The values being non-zero value makes deployment a bit more expensive,
-    // but in exchange the refund on every call to nonReentrant will be lower in
-    // amount. Since refunds are capped to a percentage of the total
-    // transaction's gas, it is best to keep them low in cases like this one, to
-    // increase the likelihood of the full refund coming into effect.
-    uint256 private constant _NOT_ENTERED = 1;
-    uint256 private constant _ENTERED = 2;
-
-    uint256 private _status;
-
-    constructor() {
-        _status = _NOT_ENTERED;
-    }
-
-    /**
-     * @dev Prevents a contract from calling itself, directly or indirectly.
-     * Calling a `nonReentrant` function from another `nonReentrant`
-     * function is not supported. It is possible to prevent this from happening
-     * by making the `nonReentrant` function external, and make it call a
-     * `private` function that does the actual work.
-     */
-    modifier nonReentrant() {
-        // On the first call to nonReentrant, _notEntered will be true
-        require(_status != _ENTERED, "ReentrancyGuard: reentrant call");
-
-        // Any calls to nonReentrant after this point will fail
-        _status = _ENTERED;
-
-        _;
-
-        // By storing the original value once again, a refund is triggered (see
-        // https://eips.ethereum.org/EIPS/eip-2200)
-        _status = _NOT_ENTERED;
-    }
-}
-
 // Base64 Contract
 // Creator: Brecht Devos <brecht@loopring.org>
 library Base64 {
@@ -1854,15 +1795,14 @@ library MerkleProof {
 
 // Chublins Reborn Contract v0.0.1
 // Creator: Christian Montoya
-contract ChublinsReborn is Ownable, ERC721A, ReentrancyGuard { 
+contract ChublinsReborn is Ownable, ERC721A { 
     constructor() ERC721A("Chublins", "CHBLN") {}
     
     uint256 private _basePrice = 0.01 ether; 
     uint256 private _maxSupply = 4444; 
     bytes32 public merkleRoot; 
     bool private _publicMintOpen; // enable after allowlist mint period
-    bool private _pngsAvailable = false; // when true, PNGs exist for all Chublins
-    mapping(address => bool) public claimed; // one call per address 
+    bool private _pngsAvailable; // when true, PNGs exist for all Chublins
     string private _baseTokenURI = "https://chublins.xyz/pngs/"; // for NFTs rendered off-chain (to be compatible with Twitter, etc.)
     uint8[4444] private _chubFlags; // will track license status, whether to return PNG or SVG
 
@@ -1878,28 +1818,25 @@ contract ChublinsReborn is Ownable, ERC721A, ReentrancyGuard {
         return bytes32(uint256(uint160(addr)));
     }
 
-    function allowListMint(uint8 quantity, bytes32[] calldata merkleProof) external payable {
-        require(_maxSupply >= (totalSupply() + quantity));
-        require(0 < quantity && quantity < 3); // 1 or 2 per address
-        require(msg.value >= (_basePrice * quantity));
+    function allowListMint(uint256 quantity, bytes32[] calldata merkleProof) external payable {
+        require(_maxSupply + 1 > (totalSupply() + quantity));
+        require(_numberMinted(msg.sender) + quantity < 3); // max 2 per address 
+        require(msg.value == (_basePrice * quantity));
         require(MerkleProof.verify(merkleProof, merkleRoot, toBytes32(msg.sender)) == true);
-        require(claimed[msg.sender] == false); 
-        claimed[msg.sender] = true; 
         _mint(msg.sender, quantity);
     }
 
-    function mint(uint8 quantity) external payable {
-        require(_publicMintOpen && _maxSupply >= (totalSupply() + quantity)); 
-        require(0 < quantity && quantity < 3); // 1 or 2 per address
-        require(msg.value >= (_basePrice * quantity));
-        require(claimed[msg.sender] == false); 
-        claimed[msg.sender] = true; 
+    function mint(uint256 quantity) external payable {
+        require(_publicMintOpen && _maxSupply + 1 > (totalSupply() + quantity)); 
+        require(_numberMinted(msg.sender) + quantity < 3); // max 2 per address 
+        require(msg.value == (_basePrice * quantity));
+        require(msg.sender == tx.origin); 
         _mint(msg.sender, quantity);
     }
 
     // this is for raffles and for making secondary buyers from first collection whole 
-    function ownerMint(uint8 quantity) external onlyOwner {
-        require(_maxSupply >= (totalSupply() + quantity));
+    function ownerMint(uint256 quantity) external onlyOwner {
+        require(_maxSupply + 1 > (totalSupply() + quantity));
         _mint(msg.sender, quantity);
     }
 
@@ -2018,7 +1955,7 @@ contract ChublinsReborn is Ownable, ERC721A, ReentrancyGuard {
     }
 
     function usePng(uint256 id) public view returns (bool) { 
-        return _chubFlags[id] >= 10; 
+        return _chubFlags[id] > 9; 
     }
 
     struct chubData {
@@ -2129,12 +2066,12 @@ contract ChublinsReborn is Ownable, ERC721A, ReentrancyGuard {
         return _maxSupply;
     }
 
-    function reduceSupply(uint256 value) public onlyOwner {
+    function reduceSupply(uint256 value) external onlyOwner {
         require(value >= totalSupply() && value < _maxSupply);
         _maxSupply = value;
     }
 
-    function setPrice(uint256 price) public onlyOwner { 
+    function setPrice(uint256 price) external onlyOwner { 
 		_basePrice = price; 
 	}
 
@@ -2146,7 +2083,7 @@ contract ChublinsReborn is Ownable, ERC721A, ReentrancyGuard {
         _baseTokenURI = baseURI;
     }
 
-    function withdrawFunds() external onlyOwner nonReentrant {
+    function withdrawFunds() external onlyOwner {
         (bool success, ) = msg.sender.call{value: address(this).balance}("");
         require(success);
     }
@@ -2155,14 +2092,14 @@ contract ChublinsReborn is Ownable, ERC721A, ReentrancyGuard {
         return _pngsAvailable;
     }
 
-    function togglePNGsAvailable() public onlyOwner {
+    function togglePNGsAvailable() external onlyOwner {
         if(_pngsAvailable) {
             _pngsAvailable = false;
         }
         _pngsAvailable = true;
     }
 
-    function toggleOnChainArt(uint256 tokenId) public returns(bool){
+    function toggleOnChainArt(uint256 tokenId) external returns(bool){
         require(ownerOf(tokenId) == msg.sender);
 
         if(usePng(tokenId)) { 
@@ -2175,7 +2112,7 @@ contract ChublinsReborn is Ownable, ERC721A, ReentrancyGuard {
         }
     }
 
-    function modifyLicense(uint256 tokenId, uint8 level) public returns(string memory){
+    function modifyLicense(uint256 tokenId, uint8 level) external returns(string memory){
         require(ownerOf(tokenId) == msg.sender);
         require(level == 1 || level==2);
         uint8 currentLicense = _chubFlags[tokenId] % 10; // 0, 1 or 2
@@ -2190,6 +2127,6 @@ contract ChublinsReborn is Ownable, ERC721A, ReentrancyGuard {
             _chubFlags[tokenId] += 1;
             return _licenses[level]; 
         }
-        revert("Unchange"); 
+        revert("Unchanged"); 
     }
 }
