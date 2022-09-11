@@ -11,7 +11,7 @@ m0nt0y4.eth
 
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.16;
+pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/utils/Base64.sol"; 
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -25,6 +25,7 @@ contract ChublinsReborn is ERC721A, Ownable {
     
     uint256 private _basePrice = 0.01 ether; 
     uint256 private _maxSupply = 4444; 
+    uint256 private _maxMintPerWallet = 2; 
     bytes32 public merkleRoot; 
     bool private _publicMintOpen; // enable after allowlist mint period
     bool private _pngsAvailable; // when true, PNGs exist for all Chublins
@@ -39,13 +40,17 @@ contract ChublinsReborn is ERC721A, Ownable {
         merkleRoot = _merkleRoot; 
     }
 
+    function setMaxMintPerWallet(uint256 max) external onlyOwner { 
+        _maxMintPerWallet = max; 
+    }
+
     function toBytes32(address addr) pure internal returns (bytes32) {
         return bytes32(uint256(uint160(addr)));
     }
 
     function allowListMint(uint256 quantity, bytes32[] calldata merkleProof) external payable {
         require(_maxSupply + 1 > (totalSupply() + quantity));
-        require(_numberMinted(msg.sender) + quantity < 3); // max 2 per address 
+        require(_numberMinted(msg.sender) + quantity < _maxMintPerWallet);
         require(msg.value == (_basePrice * quantity));
         require(MerkleProof.verify(merkleProof, merkleRoot, toBytes32(msg.sender)) == true);
         _mint(msg.sender, quantity);
@@ -53,7 +58,7 @@ contract ChublinsReborn is ERC721A, Ownable {
 
     function mint(uint256 quantity) external payable {
         require(_publicMintOpen && _maxSupply + 1 > (totalSupply() + quantity)); 
-        require(_numberMinted(msg.sender) + quantity < 3); // max 2 per address 
+        require(_numberMinted(msg.sender) + quantity < _maxMintPerWallet); 
         require(msg.value == (_basePrice * quantity));
         require(msg.sender == tx.origin); 
         _mint(msg.sender, quantity);
@@ -85,11 +90,11 @@ contract ChublinsReborn is ERC721A, Ownable {
     ];
     string[4] private _hatIds = ["none","bowl","cap","antenna"];
 
-    string[13] private _eyes = [
+    string[14] private _eyes = [
         '<circle cx="10" cy="10" r="10"/><circle cx="130" cy="10" r="10"/>',
-        '<g id="eye" transform="scale(2)"><path d="M5-7v4.522m-8.334-.87L-.422.112m13.756-3.46L10.422.112" class="lnrt tn"/><circle r="8" cy="5" cx="5"/></g><use xlink:href="#eye" transform="translate(120,0)"/>',
-        '<g id="eye"><circle cx="10" cy="10" r="30"/><circle cx="25" cy="5" r="8" fill="#fff"/><circle cx="-8" cy="20" r="4" fill="#fff"/></g><use xlink:href="#eye" transform="translate(120,0)"/>',
-        '<g id="eye"><circle cx="10" cy="10" r="30"/><circle cx="10" cy="10" r="24" class="wlrt"/></g><use xlink:href="#eye" transform="translate(120,0)"/>',
+        '<path id="eye" class="lnrt" style="fill:#000;stroke-width:1.76539;stroke-linejoin:round" d="M2.3-4v2.129zm-3.923 1.72 1.37 1.628zm7.847 0L4.853-.652zM2.3-.835A2.825 2.825 0 0 0-.524 1.99 2.825 2.825 0 0 0 2.3 4.814 2.825 2.825 0 0 0 5.125 1.99 2.825 2.825 0 0 0 2.3-.835z" transform="scale(4.5)"/><use xlink:href="#eye" transform="translate(120)"/>',
+        '<g id="eye"><circle cx="10" cy="10" r="30"/><circle cx="25" cy="5" r="8" fill="#fff"/><circle cx="-8" cy="20" r="4" fill="#fff"/></g><use xlink:href="#eye" transform="translate(120)"/>',
+        '<g id="eye"><circle cx="10" cy="10" r="30"/><circle cx="10" cy="10" r="24" class="wlrt"/></g><use xlink:href="#eye" transform="translate(120)"/>',
         '<rect x="24" y="-18" width="16" height="48" ry="8"/><rect x="100" y="-18" width="16" height="48" ry="8"/>', 
         '<path d="M40 10 A10 10 10 10 0 13 10" class="lnrt"/><path d="M140 11 A10 10 10 10 100 12 10" class="lnrt"/>',
         '<path class="lnrt" d="M-5 0h50"/><circle cx="28" cy="12" r="13"/><path class="lnrt" d="M90 0h50"/><circle cx="123" cy="12" r="13"/>', 
@@ -98,9 +103,10 @@ contract ChublinsReborn is ERC721A, Ownable {
         '<path stroke="#000" class="th" d="M-4-30 44-6"/><circle cx="23" cy="12" r="13"/><path stroke="#000" class="th" d="m108-6 48-24"/><circle cx="128" cy="12" r="13"/>',
         '<path class="lnrt" d="m-6 -16 40 24m0 0 -40 24m152 0 -40 -24m0 0 40 -24"/>',
         '<path id="eye" d="M299.348 296.348a18.83 18.83 0 0 1-20.378-17.1 18.835 18.835 0 0 1 17.098-20.382 11.605 11.605 0 0 1 12.562 10.545 11.605 11.605 0 0 1-10.546 12.557 4.375 4.375 0 0 1-.762-8.716 2.85 2.85 0 0 0-.496-5.669 10.075 10.075 0 0 0-9.135 10.903c.484 5.529 5.375 9.628 10.899 9.145a17.3 17.3 0 0 0 15.708-18.72 17.3 17.3 0 0 0-18.725-15.708 24.525 24.525 0 0 0-22.272 26.542 4.375 4.375 0 0 1-8.716.762 33.285 33.285 0 0 1 30.23-36.021 26.055 26.055 0 0 1 28.2 23.662 26.05 26.05 0 0 1-23.662 28.2z" transform="translate(-286,-260)"/><use xlink:href="#eye" transform="rotate(180,70,10)"/>',
-        '<g id="eye"><path d="M38.213.222C34.395.267 30.636.656 27.746 1.4c-6.85 1.764-15.593 6.432-19.858 10.606C3.521 16.279.134 21.323.134 23.55c0 3.84 7 16.216 11.316 20.006 1.267 1.112 2.42 1.904 2.564 1.76.143-.143-1.025-2.977-2.595-6.3-1.57-3.322-3.35-7.835-3.957-10.028L6.358 25l2.783-3.607c1.531-1.984 3.959-4.621 5.396-5.86 2.88-2.483 7.976-5.665 8.398-5.243.148.148-.172 1.701-.71 3.45-.54 1.75-1.148 5.806-1.35 9.015-.646 10.212 2.393 20.069 8.052 26.119 1.576 1.685 2.75 3.148 2.608 3.25-.141.101-.98.532-1.862.956-1.301.626.1.708 7.385.44 16.544-.611 23.18-1.11 21.833-1.644-.706-.28-2.079-.53-3.05-.554-.971-.025-1.766-.184-1.766-.354 0-.17 1.146-1.822 2.546-3.672 6.159-8.138 8.453-22.17 5.412-33.104-.221-.795-.21-1.445.025-1.445.701 0 7.546 4.483 10.479 6.862 3.212 2.606 3.454 1.809.84-2.75-3.654-6.37-11.747-11.97-21.87-15.13C48.126.675 43.121.164 38.212.222Zm-5.405 24.355a16.888 16.888 0 0 0-.075 1.534c0 6.938 4.17 12.562 9.314 12.562s9.314-5.624 9.314-12.562c0-.476-.02-.952-.06-1.425.652.024 1.299.048 2.046.071 6.607.979 6.815 1.076 7.03 3.284.538 5.525-3.596 15.873-8.034 20.109L49.9 50.48l-7.548.346-7.547.346-2.993-2.993c-3.761-3.761-6.998-10.517-8.004-16.706-1.076-7.39.776-5.131 9-6.896Z" transform="translate(-28,-18)"/></g><use xlink:href="#eye" transform="translate(142,0),scale(-1,1)"/>'
+        '<g id="eye"><path d="M38.213.222C34.395.267 30.636.656 27.746 1.4c-6.85 1.764-15.593 6.432-19.858 10.606C3.521 16.279.134 21.323.134 23.55c0 3.84 7 16.216 11.316 20.006 1.267 1.112 2.42 1.904 2.564 1.76.143-.143-1.025-2.977-2.595-6.3-1.57-3.322-3.35-7.835-3.957-10.028L6.358 25l2.783-3.607c1.531-1.984 3.959-4.621 5.396-5.86 2.88-2.483 7.976-5.665 8.398-5.243.148.148-.172 1.701-.71 3.45-.54 1.75-1.148 5.806-1.35 9.015-.646 10.212 2.393 20.069 8.052 26.119 1.576 1.685 2.75 3.148 2.608 3.25-.141.101-.98.532-1.862.956-1.301.626.1.708 7.385.44 16.544-.611 23.18-1.11 21.833-1.644-.706-.28-2.079-.53-3.05-.554-.971-.025-1.766-.184-1.766-.354 0-.17 1.146-1.822 2.546-3.672 6.159-8.138 8.453-22.17 5.412-33.104-.221-.795-.21-1.445.025-1.445.701 0 7.546 4.483 10.479 6.862 3.212 2.606 3.454 1.809.84-2.75-3.654-6.37-11.747-11.97-21.87-15.13C48.126.675 43.121.164 38.212.222Zm-5.405 24.355a16.888 16.888 0 0 0-.075 1.534c0 6.938 4.17 12.562 9.314 12.562s9.314-5.624 9.314-12.562c0-.476-.02-.952-.06-1.425.652.024 1.299.048 2.046.071 6.607.979 6.815 1.076 7.03 3.284.538 5.525-3.596 15.873-8.034 20.109L49.9 50.48l-7.548.346-7.547.346-2.993-2.993c-3.761-3.761-6.998-10.517-8.004-16.706-1.076-7.39.776-5.131 9-6.896Z" transform="translate(-28,-18)"/></g><use xlink:href="#eye" transform="translate(142),scale(-1,1)"/>',
+        '<g fill="#f3322c"><path d="M-42 -3,138 -3,138 7,-32 7,-32 20,-42 20z"/><g id="eye"><rect fill="#fff" x="-10" y="-23" width="50" height="50" stroke="#f3322c" stroke-width="10"/><rect fill="#000" x="15" y="-18" width="20" height="40"/></g><use xlink:href="#eye" transform="translate(110)"/></g>'
     ]; 
-    string[13] private _eyeIds = [
+    string[14] private _eyeIds = [
         "tiny",
         "lashes",
         "bubble",
@@ -113,7 +119,8 @@ contract ChublinsReborn is ERC721A, Ownable {
         "angry",
         "embarrassed",
         "dizzy",
-        "anime"
+        "anime",
+        "nounish"
     ];
 
     string[5] private _cheeks = [
@@ -121,7 +128,7 @@ contract ChublinsReborn is ERC721A, Ownable {
         '<ellipse cx="10" cy="60" rx="20" ry="10" fill="pink"/><ellipse cx="130" cy="60" rx="20" ry="10" fill="pink"/>', 
         '<path d="m15 6 10 12a12.8 12.8 0 1 1-20 0L15 6z" fill="#8af" transform="rotate(5 -432.172 -87.711)"/>', 
         '<path d="m15 6 10 12a12.8 12.8 0 1 1-20 0L15 6z" fill="none" stroke="black" stroke-width="3" transform="rotate(5 -432.172 -87.711)"/>',
-        '<path id="chk" fill="#ffaafc" d="M-8 24c.568-3.85 4.951-3.909 6.844-1.609 1.892-2.3 6.275-2.241 6.843 1.61.506 3.436-4.012 6.23-6.843 8.058-2.832-1.829-7.35-4.622-6.844-8.059z" transform="matrix(2 0 0 2.4 0 0)"/><use xlink:href="#chk" transform="translate(148,0)"/>'
+        '<path id="chk" fill="#faf" d="M-8 24c.568-3.85 4.951-3.909 6.844-1.609 1.892-2.3 6.275-2.241 6.843 1.61.506 3.436-4.012 6.23-6.843 8.058-2.832-1.829-7.35-4.622-6.844-8.059z" transform="matrix(2 0 0 2.4 0 0)"/><use xlink:href="#chk" transform="translate(148)"/>'
     ]; 
     string[5] private _cheekIds = [
         "plain",
@@ -156,19 +163,21 @@ contract ChublinsReborn is ERC721A, Ownable {
         "kissy"
     ]; 
 
-    string[5] private _accessories = [
+    string[6] private _accessories = [
         '',
-        '<path id="ac" d="m 62.75,68.40197 c -12.39952,0.86941 -12.32504,13.72601 -29.25,12.25 7.34151,13.53549 24.42044,13.43629 34.25,6.75 9.82956,-6.68629 4.81982,-19.68853 -5,-19 z"/><use xlink:href="#ac" transform="scale(-1,1),translate(-142,0)"/>',
+        '<path id="ac" d="m 62.75,68.40197 c -12.39952,0.86941 -12.32504,13.72601 -29.25,12.25 7.34151,13.53549 24.42044,13.43629 34.25,6.75 9.82956,-6.68629 4.81982,-19.68853 -5,-19 z"/><use xlink:href="#ac" transform="scale(-1,1),translate(-142)"/>',
         '<path fill="red" stroke="red" stroke-width="7" stroke-linejoin="round" d="m-44-82 20 15 20-15v30l-20-15-20 15z"/><rect x="-34.5" y="-77.5" width="21" height="21" rx="4" fill="red" stroke="#fff" stroke-width="2"/>',
         '<path d="M-12 -53c-3.73-2.115-6.055-6.2-6.06-10.643 0-4.447 2.327-8.537 6.06-10.655m-37.738 0c3.73 2.115 6.055 6.2 6.06 10.643 0 4.448-2.326 8.538-6.06 10.655m8.22 8.22c2.116-3.73 6.2-6.055 10.643-6.06 4.448 0 8.538 2.327 10.655 6.06m0-37.738c-2.115 3.73-6.2 6.055-10.643 6.06-4.447 0-8.537-2.326-10.655-6.06" class="lnrt tn"/>',
-        '<path d="m2.45 10.806 1.488.469.444 1.56.44-1.56 1.487-.469-1.488-.48-.439-1.547-.444 1.547zM.523 3.496l2.063.658.647 2.188.604-2.188 2.087-.658-2.087-.652L3.232.668l-.646 2.176zm8.11-2.028L7.626 5.263l-2.61 1.079 2.61 1.08 1.007 3.794L9.701 7.42l2.525-1.079-2.525-1.08z" fill="#ffc502" transform="translate(-88,-18)scale(4.5)"/>'
+        '<path d="m2.45 10.806 1.488.469.444 1.56.44-1.56 1.487-.469-1.488-.48-.439-1.547-.444 1.547zM.523 3.496l2.063.658.647 2.188.604-2.188 2.087-.658-2.087-.652L3.232.668l-.646 2.176zm8.11-2.028L7.626 5.263l-2.61 1.079 2.61 1.08 1.007 3.794L9.701 7.42l2.525-1.079-2.525-1.08z" fill="#ffc502" transform="translate(-88,-18)scale(4.5)"/>',
+        '<g class="lnrt tn" transform="matrix(.39878 -.01397 .035 .4 -150 -158)"><clipPath id="clp"><path d="M220 190h30v54h-30z"/></clipPath><ellipse id="b" cx="250" cy="217" rx="25" ry="27" fill="#f8b"/><use transform="rotate(60 250 250)" xlink:href="#b"/><use transform="rotate(120 250 250)" xlink:href="#b"/><use transform="rotate(180 250 250)" xlink:href="#b"/><use transform="rotate(240 250 250)" xlink:href="#b"/><use transform="rotate(300 250 250)" xlink:href="#b"/><use xlink:href="#b" clip-path="url(#clp)"/><circle cx="250" cy="250" r="18" fill="#fdc"/></g>'
     ]; 
-    string[5] private _accessoryIds = [
+    string[6] private _accessoryIds = [
         "none",
         "mustache",
         "bow",
         "pop",
-        "sparkle"
+        "sparkle",
+        "flower"
     ]; 
 
     string[3] private _filters = [
@@ -352,10 +361,14 @@ contract ChublinsReborn is ERC721A, Ownable {
         require(ownerOf(tokenId) == msg.sender);
         
         if(usePng(tokenId)) { 
-            _chubFlags[tokenId] -= 10; 
+            unchecked {
+                _chubFlags[tokenId] -= 10; 
+            }
         }
         else { 
-            _chubFlags[tokenId] += 10; 
+            unchecked {
+                _chubFlags[tokenId] += 10; 
+            }
         }
 
         return usePng(tokenId); 
@@ -368,12 +381,16 @@ contract ChublinsReborn is ERC721A, Ownable {
 
         if(currentLicense == 0) {
             // if current level is 0, you can set it to 1 or 2
-            _chubFlags[tokenId] += level;
+            unchecked {
+                _chubFlags[tokenId] += level;
+            }
             return _licenses[level]; 
         }
         else if(currentLicense == 1 && level == 2) {
             // if current level is 1 or 2, you can set it to 2
-            _chubFlags[tokenId] += 1;
+            unchecked { 
+                _chubFlags[tokenId] += 1;
+            }
             return _licenses[level]; 
         }
         revert("Unchanged"); 
