@@ -92,7 +92,7 @@ contract ChublinsReborn is ERC721A, Ownable {
 
     string[14] private _eyes = [
         '<circle cx="10" cy="10" r="10"/><circle cx="130" cy="10" r="10"/>',
-        '<path id="eye" class="lnrt" style="fill:#000;stroke-width:1.76539;stroke-linejoin:round" d="M2.3-4v2.129zm-3.923 1.72 1.37 1.628zm7.847 0L4.853-.652zM2.3-.835A2.825 2.825 0 0 0-.524 1.99 2.825 2.825 0 0 0 2.3 4.814 2.825 2.825 0 0 0 5.125 1.99 2.825 2.825 0 0 0 2.3-.835z" transform="scale(4.5)"/><use xlink:href="#eye" transform="translate(120)"/>',
+        '<path id="eye" class="lnft" style="fill:#000;stroke-linejoin:round" d="M10.35-18v9.58V-18zm-17.654 7.74 6.165 7.326-6.165-7.326zm35.312 0-6.17 7.326 6.17-7.326zM10.35-3.758C.951-4.188-5.732 7.386-.654 15.308c4.324 8.38 17.687 8.38 22.012.001 4.609-7.233-.44-17.71-8.8-18.873l-1.1-.145z"/><use xlink:href="#eye" transform="translate(120)"/>',
         '<g id="eye"><circle cx="10" cy="10" r="30"/><circle cx="25" cy="5" r="8" fill="#fff"/><circle cx="-8" cy="20" r="4" fill="#fff"/></g><use xlink:href="#eye" transform="translate(120)"/>',
         '<g id="eye"><circle cx="10" cy="10" r="30"/><circle cx="10" cy="10" r="24" class="wlrt"/></g><use xlink:href="#eye" transform="translate(120)"/>',
         '<rect x="24" y="-18" width="16" height="48" ry="8"/><rect x="100" y="-18" width="16" height="48" ry="8"/>', 
@@ -102,8 +102,8 @@ contract ChublinsReborn is ERC721A, Ownable {
         '<path d="m0-18 42 42M0 24l42-42m54 0 42 42m-42 0 42-42" class="lnrt"/>', 
         '<path stroke="#000" class="th" d="M-4-30 44-6"/><circle cx="23" cy="12" r="13"/><path stroke="#000" class="th" d="m108-6 48-24"/><circle cx="128" cy="12" r="13"/>',
         '<path class="lnrt" d="m-6 -16 40 24m0 0 -40 24m152 0 -40 -24m0 0 40 -24"/>',
-        '<path id="eye" d="M299.348 296.348a18.83 18.83 0 0 1-20.378-17.1 18.835 18.835 0 0 1 17.098-20.382 11.605 11.605 0 0 1 12.562 10.545 11.605 11.605 0 0 1-10.546 12.557 4.375 4.375 0 0 1-.762-8.716 2.85 2.85 0 0 0-.496-5.669 10.075 10.075 0 0 0-9.135 10.903c.484 5.529 5.375 9.628 10.899 9.145a17.3 17.3 0 0 0 15.708-18.72 17.3 17.3 0 0 0-18.725-15.708 24.525 24.525 0 0 0-22.272 26.542 4.375 4.375 0 0 1-8.716.762 33.285 33.285 0 0 1 30.23-36.021 26.055 26.055 0 0 1 28.2 23.662 26.05 26.05 0 0 1-23.662 28.2z" transform="translate(-286,-260)"/><use xlink:href="#eye" transform="rotate(180,70,10)"/>',
-        '<g id="eye"><path d="M38.213.222C34.395.267 30.636.656 27.746 1.4c-6.85 1.764-15.593 6.432-19.858 10.606C3.521 16.279.134 21.323.134 23.55c0 3.84 7 16.216 11.316 20.006 1.267 1.112 2.42 1.904 2.564 1.76.143-.143-1.025-2.977-2.595-6.3-1.57-3.322-3.35-7.835-3.957-10.028L6.358 25l2.783-3.607c1.531-1.984 3.959-4.621 5.396-5.86 2.88-2.483 7.976-5.665 8.398-5.243.148.148-.172 1.701-.71 3.45-.54 1.75-1.148 5.806-1.35 9.015-.646 10.212 2.393 20.069 8.052 26.119 1.576 1.685 2.75 3.148 2.608 3.25-.141.101-.98.532-1.862.956-1.301.626.1.708 7.385.44 16.544-.611 23.18-1.11 21.833-1.644-.706-.28-2.079-.53-3.05-.554-.971-.025-1.766-.184-1.766-.354 0-.17 1.146-1.822 2.546-3.672 6.159-8.138 8.453-22.17 5.412-33.104-.221-.795-.21-1.445.025-1.445.701 0 7.546 4.483 10.479 6.862 3.212 2.606 3.454 1.809.84-2.75-3.654-6.37-11.747-11.97-21.87-15.13C48.126.675 43.121.164 38.212.222Zm-5.405 24.355a16.888 16.888 0 0 0-.075 1.534c0 6.938 4.17 12.562 9.314 12.562s9.314-5.624 9.314-12.562c0-.476-.02-.952-.06-1.425.652.024 1.299.048 2.046.071 6.607.979 6.815 1.076 7.03 3.284.538 5.525-3.596 15.873-8.034 20.109L49.9 50.48l-7.548.346-7.547.346-2.993-2.993c-3.761-3.761-6.998-10.517-8.004-16.706-1.076-7.39.776-5.131 9-6.896Z" transform="translate(-28,-18)"/></g><use xlink:href="#eye" transform="translate(142),scale(-1,1)"/>',
+        '<path id="eye" d="M13.348 36.348C-1.656 38.421-12.982 19.396-3.958 7.211c5.049-8.91 21.023-12.392 25.71-1.32 3.747 7.44-3.603 17.852-11.876 15.663-3.956-1.608-2.82-8.127 1.446-8.302 5.403-1.256.381-8.734-3.546-4.902C1.084 10.826-.35 20.498 4.888 24.994c3.994 3.87 10.42 3.063 14.832.382C31.502 19.254 31.085-.133 18.38-5.239 3.004-11.95-14.892 3.685-12.699 19.745c.693 5.537-8.438 6.335-8.716.762-2.727-21.24 19.53-41.38 40.323-34.908C37.092-9.61 43.147 15.796 29.774 28.523c-4.303 4.468-10.245 7.3-16.426 7.825Z"/><use xlink:href="#eye" transform="rotate(180 70 10)"/>',
+        '<path d="M10.213-17.778c-7.492-.166-14.839 1.984-21.365 5.577-6.763 3.438-12.634 8.827-16.117 15.609-1.572 3.097.658 6.325 1.845 9.16 2.799 5.225 5.742 10.717 10.577 14.339 1.95.813-.914-3.5-1.166-4.672-2.371-4.881-4.319-9.966-5.629-15.235 3.75-5.02 7.774-10.02 13.3-13.178 1.518-1.312 4.434-2.435 2.926.662-3.128 11.208-2.47 24.176 4.346 33.95.815 2.056 5.191 4.278 3.952 6.047-2.155.578-1.615 1.454.295 1.183 8.865-.225 17.748-.46 26.58-1.293 3.33-.826-2.856-.949-3.682-1.403 2.38-3.632 5.256-7.024 6.608-11.236 3.161-8.451 3.47-17.862 1.191-26.56 2.173-.309 5.159 2.843 7.484 4.077 1.723.604 4.684 4.791 5.749 3.17-3.422-8.991-12.179-14.494-20.808-17.738-5.095-2.05-10.65-2.491-16.086-2.459ZM4.808 6.577c-.547 5.4 1.751 12.064 7.362 13.84 4.899 1.399 9.277-2.986 10.46-7.416 1.477-2.37-.957-7.711 3.318-6.155 2.948.281 7.532.72 6.46 4.867-.652 6.562-3.34 13.018-7.65 18.022-1.02.884-1.923 2.084-3.042 2.753l-14.911.684c-3.35-3.175-6.51-6.654-8.287-10.989-1.725-3.968-3.168-8.279-2.914-12.657 1.23-3.3 6.525-1.704 9.204-2.949Z" id="eye"/><use xlink:href="#eye" transform="matrix(-1 0 0 1 142 0)"/>',
         '<g fill="#f3322c"><path d="M-42 -3,138 -3,138 7,-32 7,-32 20,-42 20z"/><g id="eye"><rect fill="#fff" x="-10" y="-23" width="50" height="50" stroke="#f3322c" stroke-width="10"/><rect fill="#000" x="15" y="-18" width="20" height="40"/></g><use xlink:href="#eye" transform="translate(110)"/></g>'
     ]; 
     string[14] private _eyeIds = [
@@ -146,7 +146,7 @@ contract ChublinsReborn is ERC721A, Ownable {
         '<path d="M40 100a1 .8 0 0 0 64 0" class="lnrt"/><path d="M-30 104a1 .2 0 0 0 26 0" class="lnrt" transform="rotate(-30)"/>',
         '<path d="m24 120 14-10 14 10 14-10 14 10 14-10 14 10" class="lnrt"/>', 
         '<ellipse cx="70" cy="114" rx="18" ry="24"/>',
-        '<path d="M4.623 27.78C-.62 21.919-.9 12.146 3.975 5.216c4.483-6.372 10.306-6.444 22.16-.274 11.405 5.936 15.884 5.94 25.844.019 9.603-5.71 15.137-5.99 19.605-.996 4.985 5.574 6.003 12.724 2.861 20.09-3.841 9.007-9.145 9.968-21.313 3.863-12.263-6.153-17.197-6.189-28.692-.206-11.331 5.898-14.593 5.909-19.817.068Z" transform="translate(30,100)"/>',
+        '<path d="M34.623 127.78c-5.243-5.861-5.523-15.634-.648-22.564 4.483-6.372 10.306-6.444 22.16-.274 11.405 5.936 15.884 5.94 25.844.019 9.603-5.71 15.137-5.99 19.605-.996 4.985 5.574 6.003 12.724 2.861 20.09-3.841 9.007-9.145 9.968-21.313 3.863-12.263-6.153-17.197-6.189-28.692-.206-11.331 5.898-14.593 5.909-19.817.068z"/>',
         '<path d="M27,105 a1,1 0 0,0 40,0" class="lnrt"/><path d="M68,105 a1,1 0 0,0 40,0" class="lnrt"/>', 
         '<path d="M67,120 a0.6,0.6 0 0,0 0,-20" class="lnrt tn"/><path d="M67,140 a1.2,1 0 0,0 0,-20" class="lnrt tn"/>' 
     ]; 
@@ -165,10 +165,10 @@ contract ChublinsReborn is ERC721A, Ownable {
 
     string[6] private _accessories = [
         '',
-        '<path id="ac" d="m 62.75,68.40197 c -12.39952,0.86941 -12.32504,13.72601 -29.25,12.25 7.34151,13.53549 24.42044,13.43629 34.25,6.75 9.82956,-6.68629 4.81982,-19.68853 -5,-19 z"/><use xlink:href="#ac" transform="scale(-1,1),translate(-142)"/>',
+        '<path id="ac" d="m62.75,68.40197c-12.39952,0.86941 -12.32504,13.72601 -29.25,12.25 7.34151,13.53549 24.42044,13.43629 34.25,6.75 9.82956,-6.68629 4.81982,-19.68853 -5,-19z"/><use xlink:href="#ac" transform="scale(-1,1),translate(-142)"/>',
         '<path fill="red" stroke="red" stroke-width="7" stroke-linejoin="round" d="m-44-82 20 15 20-15v30l-20-15-20 15z"/><rect x="-34.5" y="-77.5" width="21" height="21" rx="4" fill="red" stroke="#fff" stroke-width="2"/>',
         '<path d="M-12 -53c-3.73-2.115-6.055-6.2-6.06-10.643 0-4.447 2.327-8.537 6.06-10.655m-37.738 0c3.73 2.115 6.055 6.2 6.06 10.643 0 4.448-2.326 8.538-6.06 10.655m8.22 8.22c2.116-3.73 6.2-6.055 10.643-6.06 4.448 0 8.538 2.327 10.655 6.06m0-37.738c-2.115 3.73-6.2 6.055-10.643 6.06-4.447 0-8.537-2.326-10.655-6.06" class="lnrt tn"/>',
-        '<path d="m2.45 10.806 1.488.469.444 1.56.44-1.56 1.487-.469-1.488-.48-.439-1.547-.444 1.547zM.523 3.496l2.063.658.647 2.188.604-2.188 2.087-.658-2.087-.652L3.232.668l-.646 2.176zm8.11-2.028L7.626 5.263l-2.61 1.079 2.61 1.08 1.007 3.794L9.701 7.42l2.525-1.079-2.525-1.08z" fill="#ffc502" transform="translate(-88,-18)scale(4.5)"/>',
+        '<path d="m2.45 10.806 1.488.469.444 1.56.44-1.56 1.487-.469-1.488-.48-.439-1.547-.444 1.547zM.523 3.496l2.063.658.647 2.188.604-2.188 2.087-.658-2.087-.652L3.232.668l-.646 2.176zm8.11-2.028L7.626 5.263l-2.61 1.079 2.61 1.08 1.007 3.794L9.701 7.42l2.525-1.079-2.525-1.08z" fill="#ffc502" transform="matrix(4.5 0 0 4.5 -88 -18)"/>',
         '<g class="lnrt tn" transform="matrix(.39878 -.01397 .035 .4 -150 -158)"><clipPath id="clp"><path d="M220 190h30v54h-30z"/></clipPath><ellipse id="b" cx="250" cy="217" rx="25" ry="27" fill="#f8b"/><use transform="rotate(60 250 250)" xlink:href="#b"/><use transform="rotate(120 250 250)" xlink:href="#b"/><use transform="rotate(180 250 250)" xlink:href="#b"/><use transform="rotate(240 250 250)" xlink:href="#b"/><use transform="rotate(300 250 250)" xlink:href="#b"/><use xlink:href="#b" clip-path="url(#clp)"/><circle cx="250" cy="250" r="18" fill="#fdc"/></g>'
     ]; 
     string[6] private _accessoryIds = [
@@ -182,8 +182,8 @@ contract ChublinsReborn is ERC721A, Ownable {
 
     string[3] private _filters = [
         '', 
-        '<feTurbulence baseFrequency="0" type="fractalNoise" stitchTiles="noStitch"><animate id="waves" attributeName="baseFrequency" dur="6s" begin="1.5s;waves.end+1.5s" values="0;0.03;0" keyTimes="0;0.5;1" easing="ease-in-out"/></feTurbulence><feDisplacementMap in="SourceGraphic" scale="14"/>',
-        '<feTurbulence baseFrequency="0.6" type="fractalNoise"/><feDisplacementMap in="SourceGraphic" scale="0"><animate id="glitch" attributeName="scale" dur="2.5s" begin="1.5s;glitch.end+3s" values="36.72;58.84;36.90;14.99;13.26;47.30;58.24;21.58;46.51;40.17;35.83;36.08;42.74;32.16;46.57;33.67;17.31;52.09;30.80;40.37;43.99;36.21;16.18;20.04;15.72;50.92;30.81"/></feDisplacementMap>'
+        '<feTurbulence baseFrequency="0" type="fractalNoise" stitchTiles="noStitch"><animate id="wvy" attributeName="baseFrequency" dur="6s" begin="1.5s;wvy.end+1.5s" values="0;0.03;0" keyTimes="0;0.5;1" easing="ease-in-out"/></feTurbulence><feDisplacementMap in="SourceGraphic" scale="14"/>',
+        '<feTurbulence baseFrequency="0.6" type="fractalNoise"/><feDisplacementMap in="SourceGraphic" scale="0"><animate id="gltch" attributeName="scale" dur="2.5s" begin="1.5s;gltch.end+3.5s" values="36.72;58.84;36.90;14.99;13.26;47.30;58.24;21.58;46.51;40.17;35.83;36.08;42.74;32.16;46.57;33.67;17.31;52.09;30.80;40.37;43.99;36.21;16.18;20.04;15.72;50.92;30.81"/></feDisplacementMap>'
     ]; 
     string[3] private _filterIds = ["none", "wavy", "glitchy"]; 
 
@@ -245,7 +245,7 @@ contract ChublinsReborn is ERC721A, Ownable {
         chub.eyesId = _eyeIds[rand]; 
 
         // random cheeks 
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "5"))) % 48;
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "5"))) % 42;
         if(rand >= _cheeks.length) { rand = 0; }
         chub.cheeks = _cheeks[rand]; 
         chub.cheeksId = _cheekIds[rand]; 
@@ -256,7 +256,7 @@ contract ChublinsReborn is ERC721A, Ownable {
         chub.mouthId = _mouthIds[rand]; 
 
         // random accessories 
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "7"))) % 60;
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "7"))) % 50;
         if(rand >= _accessories.length) { rand = 0; }
         chub.accessory = _accessories[rand]; 
         chub.accessoryId = _accessoryIds[rand]; 
@@ -280,7 +280,7 @@ contract ChublinsReborn is ERC721A, Ownable {
             filter = string.concat('<filter id="',chub.filterId,'" x="-50%" y="-50%" width="200%" height="200%">',chub.filter,'</filter>'); 
         }
 
-        return string.concat("<svg width='600' height='600' viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><style>.lnft,.lnrt{stroke:#000;stroke-linecap:round}.lnft{fill:gray;stroke-width:8;}.lnrt{fill:none;stroke-width:7;stroke-linejoin:bezel}.th{stroke-width:12}.tn{stroke-width:4}.wlrt{stroke:#fff;stroke-width:3}text{font-family:'Comic Sans MS','Comic Sans','Chalkboard SE','Comic Neue',cursive;font-size:12pt}</style><defs>",chub.filter,"</defs><rect width='100%' height='100%' fill='#",chub.bgColor,"'/><g id='chub' cursor='pointer'",filterUrl,"><ellipse cx='300' cy='460' rx='160' ry='50' fill='#fff'/><path fill='#fff' d='M140 140h320v320H140z'/><ellipse cx='300' cy='140' rx='160' ry='50' fill='#F8F4F4'/><g id='face' transform='rotate(-5 3422.335 -2819.49)'>",chub.ears,chub.hat,chub.eyes,chub.mouth,chub.cheeks,chub.accessory,"</g><animateMotion path='M0,0 -3,-9 0,-18 6,-9 2,0 0,4z' keyPoints='0;0.1875;0.375;0.5625;0.75;0.9;1' keyTimes='0;0.18;0.37;0.58;0.72;0.87;1' dur='0.8s' begin='click'/></g></svg>"); 
+        return string.concat("<svg width='600' height='600' viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><style>.lnft,.lnrt{stroke:#000;stroke-linecap:round}.lnft{fill:gray;stroke-width:8;}.lnrt{fill:none;stroke-width:7;stroke-linejoin:bezel}.th{stroke-width:12}.tn{stroke-width:4}.wlrt{stroke:#fff;stroke-width:3}text{font-family:'Comic Sans MS','Comic Sans','Chalkboard SE','Comic Neue',cursive;font-size:12pt}</style><defs>",filter,"</defs><rect width='100%' height='100%' fill='#",chub.bgColor,"'/><g id='chub' cursor='pointer'",filterUrl,"><ellipse cx='300' cy='460' rx='160' ry='50' fill='#fff'/><path fill='#fff' d='M140 140h320v320H140z'/><ellipse cx='300' cy='140' rx='160' ry='50' fill='#F8F4F4'/><g id='face' transform='rotate(-5 3422.335 -2819.49)'>",chub.ears,chub.hat,chub.eyes,chub.mouth,chub.cheeks,chub.accessory,"</g><animateMotion path='M0,0 -3,-9 0,-18 6,-9 2,0 0,4z' keyPoints='0;0.1875;0.375;0.5625;0.75;0.9;1' keyTimes='0;0.18;0.37;0.58;0.72;0.87;1' dur='0.6s' begin='click'/></g></svg>"); 
         
     }
 
