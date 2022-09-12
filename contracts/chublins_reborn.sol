@@ -30,7 +30,7 @@ contract ChublinsReborn is ERC721A, Ownable {
     bool private _publicMintOpen; // enable after allowlist mint period
     bool private _pngsAvailable; // when true, PNGs exist for all Chublins
     string private _baseTokenURI = "https://chublins.xyz/pngs/"; // for NFTs rendered off-chain (to be compatible with Twitter, etc.)
-    uint8[4444] private _chubFlags; // will track license status, whether to return PNG or SVG
+    uint8[4444] private _chubFlags; // will track license status and whether to return PNG or SVG
 
     function openPublicMint() external onlyOwner {
         _publicMintOpen = true; 
@@ -104,7 +104,7 @@ contract ChublinsReborn is ERC721A, Ownable {
         '<path class="lnrt" d="m-6 -16 40 24m0 0 -40 24m152 0 -40 -24m0 0 40 -24"/>',
         '<path id="eye" d="M13.348 36.348C-1.656 38.421-12.982 19.396-3.958 7.211c5.049-8.91 21.023-12.392 25.71-1.32 3.747 7.44-3.603 17.852-11.876 15.663-3.956-1.608-2.82-8.127 1.446-8.302 5.403-1.256.381-8.734-3.546-4.902C1.084 10.826-.35 20.498 4.888 24.994c3.994 3.87 10.42 3.063 14.832.382C31.502 19.254 31.085-.133 18.38-5.239 3.004-11.95-14.892 3.685-12.699 19.745c.693 5.537-8.438 6.335-8.716.762-2.727-21.24 19.53-41.38 40.323-34.908C37.092-9.61 43.147 15.796 29.774 28.523c-4.303 4.468-10.245 7.3-16.426 7.825Z"/><use xlink:href="#eye" transform="rotate(180 70 10)"/>',
         '<path d="M10.213-17.778c-7.492-.166-14.839 1.984-21.365 5.577-6.763 3.438-12.634 8.827-16.117 15.609-1.572 3.097.658 6.325 1.845 9.16 2.799 5.225 5.742 10.717 10.577 14.339 1.95.813-.914-3.5-1.166-4.672-2.371-4.881-4.319-9.966-5.629-15.235 3.75-5.02 7.774-10.02 13.3-13.178 1.518-1.312 4.434-2.435 2.926.662-3.128 11.208-2.47 24.176 4.346 33.95.815 2.056 5.191 4.278 3.952 6.047-2.155.578-1.615 1.454.295 1.183 8.865-.225 17.748-.46 26.58-1.293 3.33-.826-2.856-.949-3.682-1.403 2.38-3.632 5.256-7.024 6.608-11.236 3.161-8.451 3.47-17.862 1.191-26.56 2.173-.309 5.159 2.843 7.484 4.077 1.723.604 4.684 4.791 5.749 3.17-3.422-8.991-12.179-14.494-20.808-17.738-5.095-2.05-10.65-2.491-16.086-2.459ZM4.808 6.577c-.547 5.4 1.751 12.064 7.362 13.84 4.899 1.399 9.277-2.986 10.46-7.416 1.477-2.37-.957-7.711 3.318-6.155 2.948.281 7.532.72 6.46 4.867-.652 6.562-3.34 13.018-7.65 18.022-1.02.884-1.923 2.084-3.042 2.753l-14.911.684c-3.35-3.175-6.51-6.654-8.287-10.989-1.725-3.968-3.168-8.279-2.914-12.657 1.23-3.3 6.525-1.704 9.204-2.949Z" id="eye"/><use xlink:href="#eye" transform="matrix(-1 0 0 1 142 0)"/>',
-        '<g fill="#f3322c"><path d="M-42 -3,138 -3,138 7,-32 7,-32 20,-42 20z"/><g id="eye"><rect fill="#fff" x="-10" y="-23" width="50" height="50" stroke="#f3322c" stroke-width="10"/><rect fill="#000" x="15" y="-18" width="20" height="40"/></g><use xlink:href="#eye" transform="translate(110)"/></g>'
+        '<g fill="#f3322c"><path d="M-42 -3H96V7H-32V21H-42"/><g id="eye"><path fill="#fff" d="M-10 -23H40V27H-10z" stroke="#f3322c" stroke-width="10"/><path fill="#000" d="M15 -18H35V22H15z"/></g><use xlink:href="#eye" x="108"/></g>'
     ]; 
     string[14] private _eyeIds = [
         "tiny",
@@ -143,7 +143,7 @@ contract ChublinsReborn is ERC721A, Ownable {
         '<path d="m40 116 60-0" class="lnrt"/>',
         '<path d="M-100 -124a1 .9 0 0 0 60 0" class="lnrt" transform="rotate(180)"/>',
         '<path d="M40,100 a1,0.9 0 0,0 60,0" class="lnrt"/>', 
-        '<path d="M40 100a1 .8 0 0 0 64 0" class="lnrt"/><path d="M-30 104a1 .2 0 0 0 26 0" class="lnrt" transform="rotate(-30)"/>',
+        '<path d="M37 108a1 .7 0 0 0 62 0" class="lnrt"/><path d="M-31 109a1 .2 0 0 0 20 0" class="lnrt" transform="rotate(-30)"/>',
         '<path d="m24 120 14-10 14 10 14-10 14 10 14-10 14 10" class="lnrt"/>', 
         '<ellipse cx="70" cy="114" rx="18" ry="24"/>',
         '<path d="M34.623 127.78c-5.243-5.861-5.523-15.634-.648-22.564 4.483-6.372 10.306-6.444 22.16-.274 11.405 5.936 15.884 5.94 25.844.019 9.603-5.71 15.137-5.99 19.605-.996 4.985 5.574 6.003 12.724 2.861 20.09-3.841 9.007-9.145 9.968-21.313 3.863-12.263-6.153-17.197-6.189-28.692-.206-11.331 5.898-14.593 5.909-19.817.068z"/>',
@@ -165,10 +165,10 @@ contract ChublinsReborn is ERC721A, Ownable {
 
     string[6] private _accessories = [
         '',
-        '<path id="ac" d="m62.75,68.40197c-12.39952,0.86941 -12.32504,13.72601 -29.25,12.25 7.34151,13.53549 24.42044,13.43629 34.25,6.75 9.82956,-6.68629 4.81982,-19.68853 -5,-19z"/><use xlink:href="#ac" transform="scale(-1,1),translate(-142)"/>',
+        '<path id="ac" d="m60.75,68.40197c-12.39952,0.86941 -12.32504,13.72601 -29.25,12.25 7.34151,13.53549 24.42044,13.43629 34.25,6.75 9.82956,-6.68629 4.81982,-19.68853 -5,-19z"/><use xlink:href="#ac" transform="scale(-1,1),translate(-138)"/>',
         '<path fill="red" stroke="red" stroke-width="7" stroke-linejoin="round" d="m-44-82 20 15 20-15v30l-20-15-20 15z"/><rect x="-34.5" y="-77.5" width="21" height="21" rx="4" fill="red" stroke="#fff" stroke-width="2"/>',
         '<path d="M-12 -53c-3.73-2.115-6.055-6.2-6.06-10.643 0-4.447 2.327-8.537 6.06-10.655m-37.738 0c3.73 2.115 6.055 6.2 6.06 10.643 0 4.448-2.326 8.538-6.06 10.655m8.22 8.22c2.116-3.73 6.2-6.055 10.643-6.06 4.448 0 8.538 2.327 10.655 6.06m0-37.738c-2.115 3.73-6.2 6.055-10.643 6.06-4.447 0-8.537-2.326-10.655-6.06" class="lnrt tn"/>',
-        '<path d="m2.45 10.806 1.488.469.444 1.56.44-1.56 1.487-.469-1.488-.48-.439-1.547-.444 1.547zM.523 3.496l2.063.658.647 2.188.604-2.188 2.087-.658-2.087-.652L3.232.668l-.646 2.176zm8.11-2.028L7.626 5.263l-2.61 1.079 2.61 1.08 1.007 3.794L9.701 7.42l2.525-1.079-2.525-1.08z" fill="#ffc502" transform="matrix(4.5 0 0 4.5 -88 -18)"/>',
+        '<path d="m2.45 10.806 1.488.469.444 1.56.44-1.56 1.487-.469-1.488-.48-.439-1.547-.444 1.547zM.523 3.496l2.063.658.647 2.188.604-2.188 2.087-.658-2.087-.652L3.232.668l-.646 2.176zm8.11-2.028L7.626 5.263l-2.61 1.079 2.61 1.08 1.007 3.794L9.701 7.42l2.525-1.079-2.525-1.08z" fill="#ffc502" transform="matrix(4.5 0 0 4.5 -92 -68)"/>',
         '<g class="lnrt tn" transform="matrix(.39878 -.01397 .035 .4 -150 -158)"><clipPath id="clp"><path d="M220 190h30v54h-30z"/></clipPath><ellipse id="b" cx="250" cy="217" rx="25" ry="27" fill="#f8b"/><use transform="rotate(60 250 250)" xlink:href="#b"/><use transform="rotate(120 250 250)" xlink:href="#b"/><use transform="rotate(180 250 250)" xlink:href="#b"/><use transform="rotate(240 250 250)" xlink:href="#b"/><use transform="rotate(300 250 250)" xlink:href="#b"/><use xlink:href="#b" clip-path="url(#clp)"/><circle cx="250" cy="250" r="18" fill="#fdc"/></g>'
     ]; 
     string[6] private _accessoryIds = [
@@ -217,6 +217,7 @@ contract ChublinsReborn is ERC721A, Ownable {
         string filter; 
         string filterId; 
         string license;
+        bool shimmer; 
     }
 
     function makeChub(uint256 id) internal view returns (chubData memory) {
@@ -245,7 +246,7 @@ contract ChublinsReborn is ERC721A, Ownable {
         chub.eyesId = _eyeIds[rand]; 
 
         // random cheeks 
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "5"))) % 42;
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "5"))) % 20;
         if(rand >= _cheeks.length) { rand = 0; }
         chub.cheeks = _cheeks[rand]; 
         chub.cheeksId = _cheekIds[rand]; 
@@ -256,7 +257,7 @@ contract ChublinsReborn is ERC721A, Ownable {
         chub.mouthId = _mouthIds[rand]; 
 
         // random accessories 
-        rand = uint256(keccak256(abi.encodePacked(id, address(this), "7"))) % 50;
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "7"))) % 24; 
         if(rand >= _accessories.length) { rand = 0; }
         chub.accessory = _accessories[rand]; 
         chub.accessoryId = _accessoryIds[rand]; 
@@ -269,6 +270,10 @@ contract ChublinsReborn is ERC721A, Ownable {
 
         chub.license = getLicense(id); 
 
+        // random shimmer 
+        rand = uint256(keccak256(abi.encodePacked(id, address(this), "9"))) % 16;
+        chub.shimmer = ( rand < 1 ); 
+
         return chub; 
     }
 
@@ -279,29 +284,37 @@ contract ChublinsReborn is ERC721A, Ownable {
             filterUrl = string.concat(" filter='url(#",chub.filterId,")'"); 
             filter = string.concat('<filter id="',chub.filterId,'" x="-50%" y="-50%" width="200%" height="200%">',chub.filter,'</filter>'); 
         }
+        string memory bgfilter = ''; 
+        if(chub.shimmer) { 
+            bgfilter = '<path d="M0 0H600V600H0" filter="url(#fbg)"/>'; 
+            filter = string.concat(filter,'<filter x="0" y="0" width="100%" height="100%" id="fbg"><feTurbulence baseFrequency="0.0024 0.0036" numOctaves="16" seed="18"/></filter>'); 
+        }
+        string memory open = "<svg width='600' height='600' viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><style>.lnft,.lnrt{stroke:#000;stroke-linecap:round}.lnft{fill:gray;stroke-width:8;}.lnrt{fill:none;stroke-width:7;stroke-linejoin:bezel}.th{stroke-width:12}.tn{stroke-width:4}.wlrt{stroke:#fff;stroke-width:3}text{font-family:'Comic Sans MS','Comic Sans','Chalkboard SE','Comic Neue',cursive;font-size:12pt}</style><defs>"; 
 
-        return string.concat("<svg width='600' height='600' viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><style>.lnft,.lnrt{stroke:#000;stroke-linecap:round}.lnft{fill:gray;stroke-width:8;}.lnrt{fill:none;stroke-width:7;stroke-linejoin:bezel}.th{stroke-width:12}.tn{stroke-width:4}.wlrt{stroke:#fff;stroke-width:3}text{font-family:'Comic Sans MS','Comic Sans','Chalkboard SE','Comic Neue',cursive;font-size:12pt}</style><defs>",filter,"</defs><rect width='100%' height='100%' fill='#",chub.bgColor,"'/><g id='chub' cursor='pointer'",filterUrl,"><ellipse cx='300' cy='460' rx='160' ry='50' fill='#fff'/><path fill='#fff' d='M140 140h320v320H140z'/><ellipse cx='300' cy='140' rx='160' ry='50' fill='#F8F4F4'/><g id='face' transform='rotate(-5 3422.335 -2819.49)'>",chub.ears,chub.hat,chub.eyes,chub.mouth,chub.cheeks,chub.accessory,"</g><animateMotion path='M0,0 -3,-9 0,-18 6,-9 2,0 0,4z' keyPoints='0;0.1875;0.375;0.5625;0.75;0.9;1' keyTimes='0;0.18;0.37;0.58;0.72;0.87;1' dur='0.6s' begin='click'/></g></svg>"); 
+        return string.concat(open,filter,"</defs><path d='M0 0H600V600H0' fill='#",chub.bgColor,"'/>",bgfilter,"<g cursor='pointer'",filterUrl,"><g fill='#fff'><ellipse cx='300' cy='460' rx='160' ry='50'/><path d='M140 140h320v320H140z'/></g><ellipse cx='300' cy='140' rx='160' ry='50' fill='#F8F4F4'/><g transform='rotate(-5 3422.335 -2819.49)'>",chub.ears,chub.hat,chub.eyes,chub.mouth,chub.cheeks,chub.accessory,"</g><animateMotion path='M0,0 -3,-9 0,-18 6,-9 2,0 0,4z' keyPoints='0;0.1875;0.375;0.5625;0.75;0.9;1' keyTimes='0;0.18;0.37;0.58;0.72;0.87;1' dur='0.6s' begin='click'/></g></svg>"); 
         
+    }
+
+    function makeTrait(string memory tt, string memory tv) internal pure returns (string memory) { 
+        return string.concat('{"trait_type":"',tt,'","value":"',tv,'"}'); 
     }
 
     function makeTraits(chubData memory chub) internal pure returns (string memory) { 
-        return string.concat('[{"trait_type":"BG Color","value":"',chub.bgColorId,'"},{"trait_type":"Ears","value":"',chub.earsId,'"},{"trait_type":"Hat","value":"',chub.hatId,'"},{"trait_type":"Eyes","value":"',chub.eyesId,'"},{"trait_type":"Mouth","value":"',chub.mouthId,'"},{"trait_type":"Cheeks","value":"',chub.cheeksId,'"},{"trait_type":"Accessory","value":"',chub.accessoryId,'"},{"trait_type":"Filter","value":"',chub.filterId,'"},{"trait_type":"License","value":"',chub.license,'"}]');
+        string memory shimmer = chub.shimmer ? unicode"✨" : ""; 
+        shimmer = string.concat(chub.bgColorId,shimmer); 
+        return string.concat('[',makeTrait("BG Color",shimmer),',',makeTrait("Ears",chub.earsId),',',makeTrait("Hat",chub.hatId),',',makeTrait("Eyes",chub.eyesId),',',makeTrait("Mouth",chub.mouthId),',',makeTrait("Cheeks",chub.cheeksId),',',makeTrait("Accessory",chub.accessoryId),',',makeTrait("Filter",chub.filterId),',',makeTrait("License",chub.license),']'); 
     }
 
-    function tokenSVG(uint256 tokenId) public view returns (string memory) {
+    function tokenSVG(uint256 tokenId) external view returns (string memory) {
         if (!_exists(tokenId)) revert URIQueryForNonexistentToken();
-        
-        chubData memory chub = makeChub(tokenId);
 
-        return makeSVG(chub); 
+        return makeSVG(makeChub(tokenId)); 
     }
 
-    function tokenTraits(uint256 tokenId) public view returns (string memory) { 
+    function tokenTraits(uint256 tokenId) external view returns (string memory) { 
         if (!_exists(tokenId)) revert URIQueryForNonexistentToken();
-        
-        chubData memory chub = makeChub(tokenId);
 
-        return makeTraits(chub); 
+        return makeTraits(makeChub(tokenId)); 
     }
 
     function tokenURI(uint256 tokenId) override public view returns (string memory) {
@@ -310,7 +323,7 @@ contract ChublinsReborn is ERC721A, Ownable {
         chubData memory chub = makeChub(tokenId);
 
         string memory output; 
-        if(usePng(tokenId) == true && _pngsAvailable == true) {
+        if(usePng(tokenId) && _pngsAvailable) {
             output = string.concat(_baseTokenURI, _toString(tokenId), ".png"); 
         }
         else { 
@@ -349,7 +362,7 @@ contract ChublinsReborn is ERC721A, Ownable {
         require(success);
     }
 
-    function pngsAvailable() public view returns (bool) {
+    function pngsAvailable() external view returns (bool) {
         return _pngsAvailable;
     }
 
@@ -393,6 +406,6 @@ contract ChublinsReborn is ERC721A, Ownable {
             }
             return _licenses[level]; 
         }
-        revert("Unchanged"); 
+        revert(); 
     }
 }
