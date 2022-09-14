@@ -18,7 +18,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol"; 
 import "erc721a/contracts/ERC721A.sol";
 
-// Chublins Reborn Contract v0.0.3
+// Chublins Reborn Contract v0.2
 // Creator: Christian Montoya
 contract ChublinsReborn is ERC721A, Ownable { 
     constructor() ERC721A("Chublins Reborn", "CHBR") {}
@@ -49,7 +49,7 @@ contract ChublinsReborn is ERC721A, Ownable {
     }
 
     function allowListMint(uint256 quantity, bytes32[] calldata merkleProof) external payable {
-        require(_maxSupply + 1 > (totalSupply() + quantity));
+        require(_maxSupply >= (totalSupply() + quantity)); 
         require(_numberMinted(msg.sender) + quantity <= _maxMintPerWallet);
         require(msg.value == (_basePrice * quantity));
         require(MerkleProof.verify(merkleProof, merkleRoot, toBytes32(msg.sender)) == true);
@@ -57,7 +57,7 @@ contract ChublinsReborn is ERC721A, Ownable {
     }
 
     function mint(uint256 quantity) external payable {
-        require(_publicMintOpen && (_maxSupply + 1) > (totalSupply() + quantity)); 
+        require(_publicMintOpen && _maxSupply >= (totalSupply() + quantity)); 
         require(_numberMinted(msg.sender) + quantity <= _maxMintPerWallet); 
         require(msg.value == (_basePrice * quantity));
         require(msg.sender == tx.origin); 
@@ -66,7 +66,7 @@ contract ChublinsReborn is ERC721A, Ownable {
 
     // this is for raffles and for making secondary buyers from first collection whole 
     function ownerMint(uint256 quantity) external onlyOwner {
-        require(_maxSupply + 1 > (totalSupply() + quantity));
+        require(_maxSupply >= (totalSupply() + quantity)); 
         _mint(msg.sender, quantity);
     }
 
@@ -190,12 +190,14 @@ contract ChublinsReborn is ERC721A, Ownable {
     string[3] private _licenses = ["ARR", "CC BY-NC", "CC0"]; 
     
     function getLicense(uint256 id) public view returns (string memory) { 
+        require(_exists(id)); 
         uint256 licenseId = _chubFlags[id] % 10; // 0, 1 or 2
         if(licenseId > 2) { licenseId = 2; /* this should never happen */ }
         return _licenses[licenseId]; 
     }
 
     function usePng(uint256 id) public view returns (bool) { 
+        require(_exists(id)); 
         return _chubFlags[id] > 9; 
     }
 
@@ -306,19 +308,19 @@ contract ChublinsReborn is ERC721A, Ownable {
     }
 
     function tokenSVG(uint256 tokenId) external view returns (string memory) {
-        if (!_exists(tokenId)) revert URIQueryForNonexistentToken();
+        require(_exists(tokenId)); 
 
         return makeSVG(makeChub(tokenId)); 
     }
 
     function tokenTraits(uint256 tokenId) external view returns (string memory) { 
-        if (!_exists(tokenId)) revert URIQueryForNonexistentToken();
+        require(_exists(tokenId)); 
 
         return makeTraits(makeChub(tokenId)); 
     }
 
     function tokenURI(uint256 tokenId) override public view returns (string memory) {
-        if (!_exists(tokenId)) revert URIQueryForNonexistentToken();
+        require(_exists(tokenId)); 
         
         chubData memory chub = makeChub(tokenId);
 
@@ -341,7 +343,7 @@ contract ChublinsReborn is ERC721A, Ownable {
     }
 
     function reduceSupply(uint256 value) external onlyOwner {
-        require(value >= totalSupply() && value < _maxSupply);
+        require(totalSupply() < value && value < _maxSupply);
         _maxSupply = value;
     }
 
@@ -389,7 +391,7 @@ contract ChublinsReborn is ERC721A, Ownable {
 
     function modifyLicense(uint256 tokenId, uint8 level) external returns(string memory){
         require(ownerOf(tokenId) == msg.sender);
-        require(level == 1 || level==2);
+        require(level == 1 || level == 2);
         uint8 currentLicense = _chubFlags[tokenId] % 10; // 0, 1 or 2
 
         if(currentLicense == 0) {
