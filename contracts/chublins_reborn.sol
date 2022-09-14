@@ -50,15 +50,15 @@ contract ChublinsReborn is ERC721A, Ownable {
 
     function allowListMint(uint256 quantity, bytes32[] calldata merkleProof) external payable {
         require(_maxSupply + 1 > (totalSupply() + quantity));
-        require(_numberMinted(msg.sender) + quantity < _maxMintPerWallet);
+        require(_numberMinted(msg.sender) + quantity <= _maxMintPerWallet);
         require(msg.value == (_basePrice * quantity));
         require(MerkleProof.verify(merkleProof, merkleRoot, toBytes32(msg.sender)) == true);
         _mint(msg.sender, quantity);
     }
 
     function mint(uint256 quantity) external payable {
-        require(_publicMintOpen && _maxSupply + 1 > (totalSupply() + quantity)); 
-        require(_numberMinted(msg.sender) + quantity < _maxMintPerWallet); 
+        require(_publicMintOpen && (_maxSupply + 1) > (totalSupply() + quantity)); 
+        require(_numberMinted(msg.sender) + quantity <= _maxMintPerWallet); 
         require(msg.value == (_basePrice * quantity));
         require(msg.sender == tx.origin); 
         _mint(msg.sender, quantity);
