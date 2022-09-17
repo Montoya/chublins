@@ -1,0 +1,14 @@
+{
+  "name": "tree",
+  "version": "1.0.0",
+  "description": "Merkle Tree for Chublins",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Christian Montoya",
+  "license": "ISC",
+  "dependencies": {
+    "merkle-tree-gen": "^1.1.0"
+  }
+}
