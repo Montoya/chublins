@@ -132,7 +132,7 @@ contract ChublinsReborn is ERC721A, Ownable {
         "hearts"
     ]; 
 
-    string[10] private _mouths = [
+    string[12] private _mouths = [
         '<path d="M39,100 a1,1 0 0,0 60,0"/>',
         '<path d="m39 116 61-0" class="lnrt"/>',
         '<path d="M-99 -124a1 .9 0 0 0 60 0" class="lnrt" transform="rotate(180)"/>',
@@ -142,9 +142,11 @@ contract ChublinsReborn is ERC721A, Ownable {
         '<ellipse cx="69" cy="114" rx="18" ry="24"/>',
         '<path d="M35 127c-5.2-5.8-5.5-15.6-.6-22.5 4.5-6.3 10.3-6.4 22.2-.3 11.4 5.9 15.9 5.9 25.8.02 9.6-5.7 15.1-6 19.6-1 5 5.6 6 12.7 2.9 20.1-3.8 9-9 10-21 3.9-12.3-6-17-6-28.7-.2-11.3 5.9-14.6 5.9-19.8.07z"/>',
         '<path d="M29,105 a1,1 0 0,0 40,0M70,105 a1,1 0 0,0 40,0" class="lnrt"/>', 
-        '<path d="M66,120 a0.6,0.6 0 0,0 0,-20M66,140 a1.2,1 0 0,0 0,-20" class="lnrt tn"/>' 
+        '<path d="M66,120 a0.6,0.6 0 0,0 0,-20M66,140 a1.2,1 0 0,0 0,-20" class="lnrt tn"/>',
+        '<g class="lnrt"><path d="M60,128 a0.3,0.5 0 0,0 28,-3" fill="pink" class="tn"/><path d="M36,110 a0.99,0.5 0 0,0 65,0"/></g>',
+        '<path d="M39,100 a1,1 0 0,0 60,0"/><path fill="#fff" d="M58 103H68V116H58M70 103H80V116H70"/>'
     ]; 
-    string[10] private _mouthIds = [
+    string[12] private _mouthIds = [
         "happy",
         "uncertain",
         "sad",
@@ -154,7 +156,9 @@ contract ChublinsReborn is ERC721A, Ownable {
         "shocked",
         "disgusted",
         "goopy",
-        "kissy"
+        "kissy",
+        "playful",
+        "toothy"
     ]; 
 
     string[6] private _accessories = [
@@ -271,7 +275,7 @@ contract ChublinsReborn is ERC721A, Ownable {
             filter = string.concat(filter,'<filter x="0" y="0" width="100%" height="100%" id="fbg"><feTurbulence baseFrequency="0.0024 0.0036" numOctaves="16" seed="18"/></filter>'); 
         }
         string memory output = "<svg width='600' height='600' viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><style>.lnft,.lnrt{stroke:#000;stroke-linecap:round}.lnft{fill:gray;stroke-width:8;}.lnrt{fill:none;stroke-width:7;stroke-linejoin:bezel}.th{stroke-width:12}.tn{stroke-width:4}.wlrt{stroke:#fff;stroke-width:3}text{font-family:'Comic Sans MS','Comic Sans','Chalkboard SE','Comic Neue',cursive;font-size:12pt}</style><defs>"; 
-        output = string.concat(output,filter,"</defs><path d='M0 0H600V600H0' fill='#",_bgColors[chub.bgColorIndex],"'/>",bgfilter,"<g cursor='pointer'",filterUrl,"><g fill='#fff'><ellipse cx='300' cy='460' rx='160' ry='50'/><path d='M140 140h320v320H140z'/></g><ellipse cx='300' cy='140' rx='160' ry='50' fill='#F8F4F4'/><g transform='rotate(-5 3422.335 -2819.49)'>"); 
+        output = string.concat(output,filter,"</defs><path d='M0 0H600V600H0' fill='#",_bgColors[chub.bgColorIndex],"'/>",bgfilter,"<g id='chub' cursor='pointer'",filterUrl,"><g fill='#fff'><ellipse cx='300' cy='460' rx='160' ry='50'/><path d='M140 140h320v320H140z'/></g><ellipse cx='300' cy='140' rx='160' ry='50' fill='#F8F4F4'/><g id='face' transform='rotate(-5 3422.335 -2819.49)'>"); 
         return string.concat(output,_ears[chub.earsIndex],_hats[chub.hatIndex],_eyes[chub.eyesIndex],_mouths[chub.mouthIndex],_cheeks[chub.cheeksIndex],_accessories[chub.accessoryIndex],"</g><animateMotion path='M0,0 -3,-9 0,-18 6,-9 2,0 0,4z' keyPoints='0;0.1875;0.375;0.5625;0.75;0.9;1' keyTimes='0;0.18;0.37;0.58;0.72;0.87;1' dur='0.6s' begin='click'/></g></svg>"); 
         
     }
