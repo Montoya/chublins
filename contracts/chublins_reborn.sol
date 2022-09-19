@@ -39,6 +39,10 @@ contract ChublinsReborn is ERC721A, Ownable {
         _publicMintOpen = true; 
     }
 
+    function isPublicMintOpen() external view returns (bool) {
+        return _publicMintOpen;
+    }
+
     function setMaxMintPerWallet(uint16 max) external onlyOwner { 
         _maxMint = max; 
     }
@@ -55,6 +59,7 @@ contract ChublinsReborn is ERC721A, Ownable {
         require(_publicMintOpen && maxSupply() >= (totalSupply() + quantity)); 
         require(_numberMinted(msg.sender) + quantity <= _maxMint); 
         require(msg.value == (_basePrice * quantity));
+        require(msg.sender == tx.origin); 
         _mint(msg.sender, quantity);
     }
 
@@ -383,4 +388,5 @@ contract ChublinsReborn is ERC721A, Ownable {
         }
         revert(); 
     }
+    // thank you for reading my contract 
 }
