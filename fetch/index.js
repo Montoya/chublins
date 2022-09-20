@@ -24,7 +24,11 @@ async function getSVG(id) {
   });
 }
 
-// first 100 chublins
-for(var i=0;i<100;i++) { 
-  getSVG(i); 
+const main = async () => { 
+  // first 208 chublins
+  for(var i=100;i<208;i++) { 
+    await getSVG(i); 
+  }
 }
+
+main(); 
