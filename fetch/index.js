@@ -24,7 +24,7 @@ async function getSVG(id) {
   });
 }
 
-// first 208 chublins
-for(var i=0;i<207;i++) { 
+// first 100 chublins
+for(var i=0;i<100;i++) { 
   getSVG(i); 
 }
