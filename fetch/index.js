@@ -25,8 +25,7 @@ async function getSVG(id) {
 }
 
 const main = async () => { 
-  // first 208 chublins
-  for(var i=100;i<208;i++) { 
+  for(var i=299;i<351;i++) { 
     await getSVG(i); 
   }
 }
