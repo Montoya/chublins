@@ -25,7 +25,7 @@ async function getSVG(id) {
 }
 
 const main = async () => { 
-  for(var i=351;i<384;i++) { 
+  for(var i=384;i<443;i++) { 
     await getSVG(i); 
   }
 }
